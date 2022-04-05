@@ -112,7 +112,6 @@ def solution_for_decoy() -> Program:
 def solution_for_decoy_value() -> Program:
     return Program.to([])
 
-
 async def push_tx_async(spend_bundle: SpendBundle):
     try:
         # create a full node client
@@ -150,19 +149,17 @@ def blink_mojo(faucet_coin: Coin, needs_privacy_coin: Coin ,decoy_coin: Coin, de
         load_clvm(DECOY_VALUE_CLSP, package_or_requirement=__name__),
         solution_for_decoy_value()
     )
-    # empty signature i.e., c00000..... for reference
-    #signature = G2Element()
-    #true signature
-    SK = PrivateKey.from_bytes(bytes.fromhex("6d0a867fe9183ae4be04107d67c3679968b4b80b3590c04eaafa409583b31d04"))
+
+    #signature
+    SK = PrivateKey.from_bytes(bytes.fromhex("abcdef1234567890abcdef1234567abcdef1234567890abcdef1234567abcdef12345678"))
     public_key="a831c59e634939ae60792406b3f37550c318f1795a61650b7773d4c2c32828abba00368ab43dbf6930e3ac7da89f4c3e"
     pkBytes=bytes.fromhex(public_key)
     PK = G1Element.from_bytes(pkBytes);
     # hex version of "hello", arbitrary message
     DATA_TO_SIGN = bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
     #genesis challenge     
-    # mainnet below                                                                                                                                                            
-    #ADD_DATA = bytes.fromhex("ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb")
-    # testnet10  below gneale 20220403 use mainnet to pass cdv inspect debugger and mainnet or testnet10 below for pushtx                                                                                                                                                                     
+    # mainnet ADD_DATA = bytes.fromhex("ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb")
+    # testnet10 below <gneale 20220403> use mainnet to pass cdv inspect debugger and mainnet or testnet10 below for pushtx                                                                                                                                                                     
     ADD_DATA = bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2")
     sig1 = AugSchemeMPL.sign(SK, DATA_TO_SIGN + bytes.fromhex(faucet_coin.get_hash().hex()) + ADD_DATA)
     sig2 = AugSchemeMPL.sign(SK, DATA_TO_SIGN + bytes.fromhex(needs_privacy_coin.get_hash().hex()) + ADD_DATA)
