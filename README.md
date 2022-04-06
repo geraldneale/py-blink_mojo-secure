@@ -22,4 +22,4 @@ Should see:
 `"status": "SUCCESS",
  "success": true`
  
- Conclusion: Lineage of the needs_privacy_coin breaks and it's value get's directed somewhere, but without certainty to the auditor. 
+ Conclusion: Using this technique breaks the lineage of the needs_privacy_coin and directs its value somewhere intentionally, but without certainty to the auditor.
