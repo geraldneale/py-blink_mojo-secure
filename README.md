@@ -10,9 +10,13 @@ Basic steps are:
 2. `faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)` and note coin_id if from faucet or other wallet.
 3. `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000000000000)` and note coin_id if from other wallet.
 4. As a final sequence:
+
    a. `decoy_coin=deploy_smart_coin(DECOY_CLSP,100)`
+   
    b. `decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000000000000)`
-   c. `blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)`. 
+   
+   c. `blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)`.
+   
    
 Should see:
 `"status": "SUCCESS",
