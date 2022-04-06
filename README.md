@@ -22,4 +22,4 @@ Should see:
 `"status": "SUCCESS",
  "success": true`
  
- Conclusion: lineage of the needs_privacy_coin breaks and it's value appears somewhere else, but it is not certain where.
+ Conclusion: Lineage of the needs_privacy_coin breaks and it's value get's directed somewhere, but without certainty to the auditor. 
