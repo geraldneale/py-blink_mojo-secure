@@ -6,6 +6,16 @@ Chialisp money privacy tool using aggregated BLS signatures for security and Pyt
 * Need to update your own public key in blink_mojo.py, faucet.clsp, needs_privacy.clsp, decoy.clsp, and decoy_value.clsp.
 
 Basic steps are:
-1. `faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)` and note coin_id if from faucet or other wallet.
-2. `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000000000000)` and note coin_id if from other wallet.
-3. As a final sequence create decoy_coin, decoy_value_coin, reference the coin_ids in steps 1 & 2, and blink_mojo(). Done.
+1. `python3 -i blink_mojo.py`
+2. `faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)` and note coin_id if from faucet or other wallet.
+3. `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000000000000)` and note coin_id if from other wallet.
+4. As a final sequence:
+   a. `decoy_coin=deploy_smart_coin(DECOY_CLSP,100)`
+   b. `decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000000000000)`
+   c. `blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)`. 
+   
+Should see:
+`"status": "SUCCESS",
+ "success": true`
+ 
+ The end result should be that the lineage of the needs_privacy_coin breaks and it's value appears somewhere else, but it is not certain where.
