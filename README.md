@@ -1,7 +1,7 @@
 # py-blink_mojo-secure
 Chialisp money privacy tool using aggregated BLS signatures for security and Python3 for automation.
 
-* Runs on testnet10 by default
+* Runs on testnet10 by default.
 * Need to update your own private key in blink_mojo.py file.
 * Need to update your own public key in blink_mojo.py, faucet.clsp, needs_privacy.clsp, decoy.clsp, and decoy_value.clsp.
 
