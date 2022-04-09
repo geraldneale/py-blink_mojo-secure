@@ -30,7 +30,7 @@ known_wallet=bytes.fromhex("c9516a5309267d9bc118d0710db96a105d27ee1c0864a215440b
 anon_wallet=bytes.fromhex("c9516a5309267d9bc118d0710db96a105d27ee1c0864a215440b33edbc49255f")
 msg=bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
 public_key=bytes.fromhex("a831c59e634939ae60792406b3f37550c318f1795a61650b7773d4c2c32828abba00368ab43dbf6930e3ac7da89f4c3e")
-private_key=bytes.fromhex("6d0a867fe9183ae4be04107d67c3679968b4b80b3590c04eaafa409583b31d04")
+private_key=bytes.fromhex("0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
 # config/config.yaml
 config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
 self_hostname = config["self_hostname"] # localhost
