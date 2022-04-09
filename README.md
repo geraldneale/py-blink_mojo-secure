@@ -2,6 +2,7 @@
 Chialisp money privacy tool using aggregated BLS signatures for security and Python3 for automation.
 
 * Runs on testnet10 by default.
+* Requires full node.
 * Need to update your own private key, public key, anonymous wallet and known wallet in blink_mojo.py file.
 
 
