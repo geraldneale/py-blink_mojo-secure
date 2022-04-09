@@ -22,6 +22,6 @@ Should see:
 `"status": "SUCCESS",
  "success": true`
  
- Conclusion: Using this technique breaks the lineage of the needs_privacy_coin and directs its value somewhere intentionally, but without certainty as to where from the perspective of the auditor. It is as simplistic a use of automated Python3 code to accomplish this task as possible. The complexity comes from the nature of the chia-blockchain which offers privacy opportunities in two forms in the opinion of the author; which are 
+ Conclusion: Using this technique breaks the lineage of the needs_privacy_coin and directs its value somewhere intentionally, but without certainty as to where from the perspective of the auditor. It is as simplistic a use of automated Python3 code to accomplish this task as possible. The complexity comes from the nature of the chia-blockchain which offers privacy opportunities in two forms in the opinion of the author; which are:
 1) puzzle hashes offer opportunity to inject logic at CREATE COIN so that the sending party, which becomes the parentid, cannot be held responsible for that logic and 
 2) because everything is evaluated at the instant of block formation value chialisp has been empowered to move value aribitrarily around a spend bundle offering the opportunity to insert doubt of source->destination relationship.   
