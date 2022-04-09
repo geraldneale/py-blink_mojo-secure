@@ -26,6 +26,11 @@ FAUCET_CLSP = "faucet.clsp"
 NEEDS_PRIVACY_CLSP = "needs_privacy.clsp"
 DECOY_CLSP = "decoy.clsp"
 DECOY_VALUE_CLSP = "decoy_value.clsp"
+known_wallet=bytes.fromhex("c9516a5309267d9bc118d0710db96a105d27ee1c0864a215440b33edbc49255f")
+anon_wallet=bytes.fromhex("c9516a5309267d9bc118d0710db96a105d27ee1c0864a215440b33edbc49255f")
+msg=bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
+public_key=bytes.fromhex("a831c59e634939ae60792406b3f37550c318f1795a61650b7773d4c2c32828abba00368ab43dbf6930e3ac7da89f4c3e")
+private_key=bytes.fromhex("6d0a867fe9183ae4be04107d67c3679968b4b80b3590c04eaafa409583b31d04")
 # config/config.yaml
 config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
 self_hostname = config["self_hostname"] # localhost
@@ -87,7 +92,7 @@ def send_money(amount, address, fee=0):
 def deploy_smart_coin(clsp_file: str, amount: uint64, fee=0):
     s = time.perf_counter()
     # load coins (compiled and serialized, same content as clsp.hex)
-    mod = load_clvm(clsp_file, package_or_requirement=__name__)
+    mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg)
     # cdv clsp treehash
     treehash = mod.get_tree_hash()
     # cdv encode
@@ -100,14 +105,14 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=0):
     return coin
 
 # opc '()'
-def solution_for_faucet() -> Program:
-    return Program.to([])
+def solution_for_faucet(anon_wallet) -> Program:
+    return Program.to([anon_wallet])
 
 def solution_for_needs_privacy() -> Program:
     return Program.to([])
 
-def solution_for_decoy() -> Program:
-    return Program.to([])
+def solution_for_decoy(known_wallet) -> Program:
+    return Program.to([known_wallet])
 
 def solution_for_decoy_value() -> Program:
     return Program.to([])
@@ -131,30 +136,28 @@ def blink_mojo(faucet_coin: Coin, needs_privacy_coin: Coin ,decoy_coin: Coin, de
     # coin information, puzzle_reveal, and solution
     faucet_spend = CoinSpend(
         faucet_coin,
-       load_clvm(FAUCET_CLSP, package_or_requirement=__name__),
-        solution_for_faucet()
+       load_clvm(FAUCET_CLSP, package_or_requirement=__name__).curry(public_key,msg),
+        solution_for_faucet(anon_wallet)
     )
     needs_privacy_spend = CoinSpend(
         needs_privacy_coin,
-        load_clvm(NEEDS_PRIVACY_CLSP, package_or_requirement=__name__),
+        load_clvm(NEEDS_PRIVACY_CLSP, package_or_requirement=__name__).curry(public_key,msg),
         solution_for_needs_privacy()
     )
     decoy_spend = CoinSpend(
         decoy_coin,
-       load_clvm(DECOY_CLSP, package_or_requirement=__name__),
-        solution_for_decoy()
+       load_clvm(DECOY_CLSP, package_or_requirement=__name__).curry(public_key,msg),
+        solution_for_decoy(known_wallet)
     )
     decoy_value_spend = CoinSpend(
         decoy_value_coin,
-        load_clvm(DECOY_VALUE_CLSP, package_or_requirement=__name__),
+        load_clvm(DECOY_VALUE_CLSP, package_or_requirement=__name__).curry(public_key,msg),
         solution_for_decoy_value()
     )
 
     #signature
-    SK = PrivateKey.from_bytes(bytes.fromhex("abcdef1234567890abcdef1234567abcdef1234567890abcdef1234567abcdef12345678"))
-    public_key="a831c59e634939ae60792406b3f37550c318f1795a61650b7773d4c2c32828abba00368ab43dbf6930e3ac7da89f4c3e"
-    pkBytes=bytes.fromhex(public_key)
-    PK = G1Element.from_bytes(pkBytes);
+    SK = PrivateKey.from_bytes(private_key)
+    PK = G1Element.from_bytes(public_key);
     # hex version of "hello", arbitrary message
     DATA_TO_SIGN = bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
     #genesis challenge     
