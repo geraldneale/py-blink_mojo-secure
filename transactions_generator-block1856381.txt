@@ -1,7 +1,7 @@
 Output created with the following command:
 cdv rpc blocks -s 1856381 -e 1856382
 Below is a 4 coin spend bundle using py-blink_mojo-secure v0.3.0: 
-line 9 faucet_coin line 10 needs_privacy_coin line 11 decoy_coin and line 12 decoy_value_coin
+line 9 faucet_coin line 10 needs_privacy_coin line 11 decoy_coin line 12 decoy_value_coin and line 13 the rest of block #1856381
 The public key associate with each AGG_SIG_ME "50" is different for each spend eliminating one major association of these coins to each other.
 The aggregate signature that secured the spend bundle that created these spends is rolled into the one aggregate signature for the block and can't be backed out reliably, therefore it is used once and gone.
 There are other things associating these coins to one another like value relationships and proximity in the transactions_generator, but those are addressable. 
