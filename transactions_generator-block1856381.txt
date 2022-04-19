@@ -4,7 +4,7 @@ Below is a 4 coin spend bundle using py-blink_mojo-secure v0.3.0:
 line 9 faucet_coin line 10 needs_privacy_coin line 11 decoy_coin line 12 decoy_value_coin and line 13 the rest of block #1856381
 The public key associate with each AGG_SIG_ME "50" is different for each spend eliminating one major association of these coins to each other.
 The aggregate signature that secured the spend bundle that created these spends is rolled into the one aggregate signature for the block and can't be backed out reliably, therefore it is used once and gone.
-There are other things associating these coins to one another like value relationships and proximity in the transactions_generator, but those are addressable. 
+There are other things associating these coins to one another like the AGG_SIG_ME message(0x2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824), the value relationships, and proximity in the transactions_generator, but they are addressable. 
 ---------------------------
 (q ((0x23671bf4576156bcdc06565580d158f146d23c1e24dc1f736815ec3162cd99ff (a (q 2 (q 4 (c 4 (c 5 (c 11 ()))) (c (c 6 (c 23 (q 1000))) ())) (c (q 50 . 51) 1)) (c (q . 0xadd78539b7deeb604c5c193da399966494b5eaa0373846e5b3667cc8b215b73a85ac90f32f7c9ed6881b9bca565fb56b) (c (q . 0x2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824) 1))) 100 (0x459e69daa698a59f93e4cc0ac72add207539abd3047ef73dbcd917778cdd3948))
 (0x3927fb195daff211aa892dd02647719e5b994a62338baac4f99e4dd293fb2906 (a (q 2 (q 4 (c 2 (c 5 (c 11 ()))) ()) (c (q . 50) 1)) (c (q . 0x8859fba03fa3ca58854d755610a55612541c34316e0fe3583dc6aabdebe58953cd5220832861d3b9f0a8b87f9dc35ced) (c (q . 0x2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824) 1))) 1000 ())
