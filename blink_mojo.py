@@ -20,29 +20,34 @@ from chia.consensus.default_constants import DEFAULT_CONSTANTS
 from chia.util.ints import uint16, uint64
 from chia.wallet.transaction_record import TransactionRecord
 
+def destination_puzzle_hash(address):
+    if address.startswith(("xch","txch")):
+        if address.startswith("txch"):
+            puzzle_hash = decode_puzzle_hash(address[1:])
+        else:
+            puzzle_hash = decode_puzzle_hash(address)    
+    return puzzle_hash
+
 def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
-known_wallet, anon_wallet = bytes.fromhex("0931bc0b32af0230d47e5d8d725ebe97d3a64da3b70d7b4750bb46b336daf745"), bytes.fromhex("459e69daa698a59f93e4cc0ac72add207539abd3047ef73dbcd917778cdd3948")
+anon_wallet = "xch1xdt4dy77tj705mhm9au722ggp3l6qkc5kv4pk6tsz0us03sv2kcs4dct3v"
+known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9"
 
 seed_faucet = secrets.token_bytes(32)
-#print("Seed for faucet_coin: {}".format(seed_faucet))
 secret_key_faucet: PrivateKey = AugSchemeMPL.key_gen(seed_faucet)
 public_key_faucet: G1Element = secret_key_faucet.get_g1()
 
 seed_needs_privacy = secrets.token_bytes(32)
-#print("Seed for needs_privacy_coin: {}".format(seed_needs_privacy))
 secret_key_needs_privacy: PrivateKey = AugSchemeMPL.key_gen(seed_needs_privacy)  
 public_key_needs_privacy: G1Element = secret_key_needs_privacy.get_g1()
 
 seed_decoy = secrets.token_bytes(32)
-#print("Seed for decoy_coin: {}".format(seed_decoy))
 secret_key_decoy : PrivateKey = AugSchemeMPL.key_gen(seed_decoy) 
 public_key_decoy: G1Element = secret_key_decoy.get_g1()
 
 seed_decoy_value = secrets.token_bytes(32)
-#print("Seed for decoy_value_coin: {}".format(seed_decoy_value))
 secret_key_decoy_value : PrivateKey = AugSchemeMPL.key_gen(seed_decoy_value) 
 public_key_decoy_value: G1Element = secret_key_decoy_value.get_g1()
 
@@ -109,9 +114,11 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=2):
     s = time.perf_counter()
     # load coins (compiled and serialized, same content as clsp.hex)
     if clsp_file == "faucet.clsp":
-        public_key = public_key_faucet 
+        public_key = public_key_faucet
+        print("Private key for faucet_coin: {}".format(secret_key_faucet))
     elif clsp_file == "needs_privacy.clsp":
-        public_key = public_key_needs_privacy 
+        public_key = public_key_needs_privacy
+        print("Private key for needs_privacy_coin: {}".format(secret_key_needs_privacy)) 
     elif clsp_file == "decoy.clsp":
         public_key = public_key_decoy
     elif clsp_file == "decoy_value.clsp":
@@ -128,15 +135,14 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=2):
 
     return coin
 
-# opc '()'
 def solution_for_faucet(anon_wallet) -> Program:
-    return Program.to([anon_wallet])
+    return Program.to([destination_puzzle_hash(anon_wallet)])
 
 def solution_for_needs_privacy() -> Program:
     return Program.to([])
 
 def solution_for_decoy(known_wallet) -> Program:
-    return Program.to([known_wallet])
+    return Program.to([destination_puzzle_hash(known_wallet)])
 
 def solution_for_decoy_value() -> Program:
     return Program.to([])
@@ -180,7 +186,7 @@ def blink_mojo(faucet_coin: Coin, needs_privacy_coin: Coin ,decoy_coin: Coin, de
     )
 
     #signature
-    # hex version of "hello", arbitrary message
+    # arbitrary message at this point
     DATA_TO_SIGN = msg
     #genesis challenge
     ADD_DATA= DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA
