@@ -31,3 +31,7 @@ Should see:
 2) Everything is evaluated at the instant of block formation by nature of chialisp being a functional programming language. Therefore value is moved aribitrarily around a spend bundle to coin creation outputs that need value. This introduces doubt of the source->destination relationship within a spend bundle. And importantly, the definition of which coins went into this spend bundle in mempool canNOT be reverse engineered from the blockchain after block formation(as far as I know). That is what I call the "blink" in blink_mojo.
 
 Please try it and let me know what assumptions I might have wrong.
+
+xch1hv4gj4vvdsyzn9hrhy9tn6hu6jwk82tyrs3t4r33468x642myjws8kh8xl
+
+http://mojopuzzler.org
