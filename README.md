@@ -13,16 +13,16 @@ Basic steps for *NIX are:
 4. `python3 -i blink_mojo.py`
 5. `faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)` NOTE coin_id and seed if from another wallet(or from faucet).
 6. `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)` NOTE coin_id and seed if from another wallet.
-7. As a final sequence:
+7. `decoy_coin=deploy_smart_coin(DECOY_CLSP,100)`
+8. `decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000)`
+9. As a final sequence:
 
-   a. `decoy_coin=deploy_smart_coin(DECOY_CLSP,100)`
-   
-   b. `decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000)`
-   
+   a. `anon_wallet = "xch<whateverwalletaddressyoudesire>"`
+   b. `known_wallet = "xch<whateverotherwalletaddressyoudesire>"
    c. `blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)`.
    
    
-Should see:
+You should see:
 `"status": "SUCCESS",
  "success": true`
  
