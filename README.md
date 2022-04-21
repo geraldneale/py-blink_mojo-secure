@@ -18,7 +18,9 @@ Basic steps for *NIX are:
 9. As a final sequence:
 
    a. `anon_wallet = "xch<whateverwalletaddressyoudesire>"`
+   
    b. `known_wallet = "xch<whateverotherwalletaddressyoudesire>"
+   
    c. `blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)`.
    
    
