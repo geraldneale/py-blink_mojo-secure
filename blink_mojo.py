@@ -32,8 +32,8 @@ def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
-anon_wallet = "xch1xdt4dy77tj705mhm9au722ggp3l6qkc5kv4pk6tsz0us03sv2kcs4dct3v"
-known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9"
+#anon_wallet = "xch1xdt4dy77tj705mhm9au722ggp3l6qkc5kv4pk6tsz0us03sv2kcs4dct3v"
+#known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9"
 
 msg=bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
 # config/config.yaml
