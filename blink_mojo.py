@@ -35,22 +35,6 @@ FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "
 anon_wallet = "xch1xdt4dy77tj705mhm9au722ggp3l6qkc5kv4pk6tsz0us03sv2kcs4dct3v"
 known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9"
 
-seed_faucet = secrets.token_bytes(32)
-secret_key_faucet: PrivateKey = AugSchemeMPL.key_gen(seed_faucet)
-public_key_faucet: G1Element = secret_key_faucet.get_g1()
-
-seed_needs_privacy = secrets.token_bytes(32)
-secret_key_needs_privacy: PrivateKey = AugSchemeMPL.key_gen(seed_needs_privacy)  
-public_key_needs_privacy: G1Element = secret_key_needs_privacy.get_g1()
-
-seed_decoy = secrets.token_bytes(32)
-secret_key_decoy : PrivateKey = AugSchemeMPL.key_gen(seed_decoy) 
-public_key_decoy: G1Element = secret_key_decoy.get_g1()
-
-seed_decoy_value = secrets.token_bytes(32)
-secret_key_decoy_value : PrivateKey = AugSchemeMPL.key_gen(seed_decoy_value) 
-public_key_decoy_value: G1Element = secret_key_decoy_value.get_g1()
-
 msg=bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
 # config/config.yaml
 config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
@@ -78,7 +62,7 @@ def get_coin(coin_id: str):
 
 # Send from your default wallet on your machine
 # Wallet has to be running, e.g., chia start wallet
-async def send_money_async(amount, address, fee=2):
+async def send_money_async(amount, address, fee=100):
     wallet_id = "1"
     try:
         print(f"sending {amount} to {address}...")
@@ -89,7 +73,8 @@ async def send_money_async(amount, address, fee=2):
         # send standard transaction
         res = await wallet_client.send_transaction(wallet_id, amount, address, fee)
         tx_id = res.name
-        print(f"waiting until transaction {tx_id} is confirmed...")
+        print(f"waiting until transaction {tx_id} is confirmed...\nFor more info run from the terminal:")
+        print(f"chia wallet get_transaction -tx {tx_id} -v")
         # wait until transaction is confirmed
         tx: TransactionRecord = await wallet_client.get_transaction(wallet_id, tx_id)
         while (not tx.confirmed):
@@ -106,23 +91,20 @@ async def send_money_async(amount, address, fee=2):
         wallet_client.close()
         await wallet_client.await_closed()
 
-#send_money(10000,"txch1y9vvu4t3dd03w7gvvq5jn2ff7ckze5jc8uk3ek8fmahwrufw0jtq0wwgw7",100)
+#send_money(10000,"txch1y9vvu4t3dd03w7gvvq5jn2ff7ckze5jc8uk3ek8fmahwrufw0jtq0wwgw7",100) 
+#sometimes useful to run manually like this with higher fees to push 'INVALID_FEE_TOO_CLOSE_TO_ZERO' though in tandem
 def send_money(amount, address, fee=2):
     return asyncio.run(send_money_async(amount, address, fee))
 
-def deploy_smart_coin(clsp_file: str, amount: uint64, fee=2):
+def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
     s = time.perf_counter()
     # load coins (compiled and serialized, same content as clsp.hex)
-    if clsp_file == "faucet.clsp":
-        public_key = public_key_faucet
-        print("Private key for faucet_coin: {}".format(secret_key_faucet))
-    elif clsp_file == "needs_privacy.clsp":
-        public_key = public_key_needs_privacy
-        print("Private key for needs_privacy_coin: {}".format(secret_key_needs_privacy)) 
-    elif clsp_file == "decoy.clsp":
-        public_key = public_key_decoy
-    elif clsp_file == "decoy_value.clsp":
-        public_key = public_key_decoy_value
+    seed = secrets.token_bytes(32)
+    print("Seed for {} coin: {}".format(clsp_file,seed))
+    private_key: PrivateKey = AugSchemeMPL.key_gen(seed)
+    #print("Private key for {}: {}".format(clsp_file, private_key))
+    public_key: G1Element = private_key.get_g1()
+    #print("Public key for {}: {}".format(clsp_file, public_key))
     mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg)
     # cdv clsp treehash
     treehash = mod.get_tree_hash()
@@ -133,8 +115,9 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=2):
     print(f"deploy {clsp_file} with {amount} mojos to {treehash} in {elapsed:0.2f} seconds.")
     print(f"coin_id: {coin.get_hash().hex()}")
 
-    return coin
+    return coin, private_key, public_key
 
+# opc '()'
 def solution_for_faucet(anon_wallet) -> Program:
     return Program.to([destination_puzzle_hash(anon_wallet)])
 
@@ -162,38 +145,38 @@ async def push_tx_async(spend_bundle: SpendBundle):
 def push_tx(spend_bundle: SpendBundle):
     return asyncio.run(push_tx_async(spend_bundle))
 
-def blink_mojo(faucet_coin: Coin, needs_privacy_coin: Coin ,decoy_coin: Coin, decoy_value_coin: Coin):
+def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     # coin information, puzzle_reveal, and solution
     faucet_spend = CoinSpend(
-        faucet_coin,
-       load_clvm(FAUCET_CLSP, package_or_requirement=__name__).curry(public_key_faucet,msg),
+        faucet_coin[0],
+       load_clvm(FAUCET_CLSP, package_or_requirement=__name__).curry(faucet_coin[2],msg),
         solution_for_faucet(anon_wallet)
     )
     needs_privacy_spend = CoinSpend(
-        needs_privacy_coin,
-        load_clvm(NEEDS_PRIVACY_CLSP, package_or_requirement=__name__).curry(public_key_needs_privacy,msg),
+        needs_privacy_coin[0],
+        load_clvm(NEEDS_PRIVACY_CLSP, package_or_requirement=__name__).curry(needs_privacy_coin[2],msg),
         solution_for_needs_privacy()
     )
     decoy_spend = CoinSpend(
-        decoy_coin,
-       load_clvm(DECOY_CLSP, package_or_requirement=__name__).curry(public_key_decoy,msg),
+        decoy_coin[0],
+       load_clvm(DECOY_CLSP, package_or_requirement=__name__).curry(decoy_coin[2],msg),
         solution_for_decoy(known_wallet)
     )
     decoy_value_spend = CoinSpend(
-        decoy_value_coin,
-        load_clvm(DECOY_VALUE_CLSP, package_or_requirement=__name__).curry(public_key_decoy_value,msg),
+        decoy_value_coin[0],
+        load_clvm(DECOY_VALUE_CLSP, package_or_requirement=__name__).curry(decoy_value_coin[2],msg),
         solution_for_decoy_value()
     )
 
     #signature
-    # arbitrary message at this point
+    # hex version of "hello", arbitrary message
     DATA_TO_SIGN = msg
     #genesis challenge
     ADD_DATA= DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA
-    sig1 = AugSchemeMPL.sign(secret_key_faucet, DATA_TO_SIGN + bytes.fromhex(faucet_coin.get_hash().hex()) + ADD_DATA)
-    sig2 = AugSchemeMPL.sign(secret_key_needs_privacy, DATA_TO_SIGN + bytes.fromhex(needs_privacy_coin.get_hash().hex()) + ADD_DATA)
-    sig3 = AugSchemeMPL.sign(secret_key_decoy, DATA_TO_SIGN + bytes.fromhex(decoy_coin.get_hash().hex()) + ADD_DATA)
-    sig4 = AugSchemeMPL.sign(secret_key_decoy_value, DATA_TO_SIGN + bytes.fromhex(decoy_value_coin.get_hash().hex()) + ADD_DATA)
+    sig1 = AugSchemeMPL.sign(faucet_coin[1], DATA_TO_SIGN + bytes.fromhex(faucet_coin[0].get_hash().hex()) + ADD_DATA)
+    sig2 = AugSchemeMPL.sign(needs_privacy_coin[1], DATA_TO_SIGN + bytes.fromhex(needs_privacy_coin[0].get_hash().hex()) + ADD_DATA)
+    sig3 = AugSchemeMPL.sign(decoy_coin[1], DATA_TO_SIGN + bytes.fromhex(decoy_coin[0].get_hash().hex()) + ADD_DATA)
+    sig4 = AugSchemeMPL.sign(decoy_value_coin[1], DATA_TO_SIGN + bytes.fromhex(decoy_value_coin[0].get_hash().hex()) + ADD_DATA)
     signature: G2Element = AugSchemeMPL.aggregate([sig1, sig2, sig3, sig4])
 
     # SpendBundle
