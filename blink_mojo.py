@@ -91,7 +91,6 @@ async def send_money_async(amount, address, fee=100):
         await wallet_client.await_closed()
 
 #send_money(10000,"txch1y9vvu4t3dd03w7gvvq5jn2ff7ckze5jc8uk3ek8fmahwrufw0jtq0wwgw7",100) #for example
-#sometimes useful to run manually like this with higher fees to push 'INVALID_FEE_TOO_CLOSE_TO_ZERO' though in tandem
 def send_money(amount, address, fee=2):
     return asyncio.run(send_money_async(amount, address, fee))
 
