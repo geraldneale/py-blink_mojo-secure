@@ -10,7 +10,7 @@ Basic steps for *NIX are:
 1. `python3 -m venv venv`
 2. `. ./venv/bin/activate`
 3. `pip3 install -r requirements.txt`
-4. `python3 -i blink_mojo.py`.
+4. `python3 -i blink_mojo.py`
 5. `faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)` NOTE coin_id and private key if from another wallet(or from faucet).
 6. `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)` NOTE coin_id and private key if from another wallet.
 7. As a final sequence:
