@@ -53,10 +53,9 @@ async def get_coin_async(coin_id: str):
         full_node_client.close()
         await full_node_client.await_closed()
 
-#faucet_coin=get_coin("97b5e4314819a2511deef9367ceecda813fcf30dc33f06fdbc1643ca04e6f67d") for example
-#needs_privacy_coin=get_coin("6f450cae194f3cf7026537e3fa0d65e284984f934a1e5a23347fe4990890a52a") for example
-#decoy_coin=get_coin("c4cee65fee52e01856793bc7c7022c92fe8bcf92864b0afb582fd3e63d4ff9a2") for example
-#decoy_value_coin=get_coin("4e95629bd1690c5cb8559f024f8381723a8d3c170deb509da336ec91b92619db") for example
+#faucet_private_key: PrivateKey = AugSchemeMPL.key_gen(b'H\r\xc8_\xd9#\xed\xd3g\xa26W\x0bR\xfe\xeb\xb8\xe9%\x0es_elc\xa5\xea\xb1s\x8e\xf2\x91') #for example
+#faucet_public_key: G1Element = faucet_private_key.get_g1() #for example
+#faucet_coin=get_coin("56c68f1f840ff522fcd4ff7676d69725d7f39b35d15c01cc53a2cb0d012855d9"),faucet_private_key,faucet_public_key #for example
 def get_coin(coin_id: str):
     return asyncio.run(get_coin_async(coin_id))
 
@@ -91,7 +90,7 @@ async def send_money_async(amount, address, fee=100):
         wallet_client.close()
         await wallet_client.await_closed()
 
-#send_money(10000,"txch1y9vvu4t3dd03w7gvvq5jn2ff7ckze5jc8uk3ek8fmahwrufw0jtq0wwgw7",100) 
+#send_money(10000,"txch1y9vvu4t3dd03w7gvvq5jn2ff7ckze5jc8uk3ek8fmahwrufw0jtq0wwgw7",100) #for example
 #sometimes useful to run manually like this with higher fees to push 'INVALID_FEE_TOO_CLOSE_TO_ZERO' though in tandem
 def send_money(amount, address, fee=2):
     return asyncio.run(send_money_async(amount, address, fee))
