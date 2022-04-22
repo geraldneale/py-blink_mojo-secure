@@ -32,8 +32,9 @@ def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
-#anon_wallet = "xch1xdt4dy77tj705mhm9au722ggp3l6qkc5kv4pk6tsz0us03sv2kcs4dct3v"
-#known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9"
+#define the following variables based on your needs
+#anon_wallet = "xch1q3mdtrl999s0mdf0ud3sssfuatldq5hshlllj8l33uwjd4yj422q56d7h4" #for example
+#known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9" #for example
 
 msg=bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
 # config/config.yaml
@@ -91,6 +92,7 @@ async def send_money_async(amount, address, fee=100):
         await wallet_client.await_closed()
 
 #send_money(10000,"txch1y9vvu4t3dd03w7gvvq5jn2ff7ckze5jc8uk3ek8fmahwrufw0jtq0wwgw7",100) #for example
+#sometimes useful to run manually like this with higher fees to push 'INVALID_FEE_TOO_CLOSE_TO_ZERO' though in tandem
 def send_money(amount, address, fee=2):
     return asyncio.run(send_money_async(amount, address, fee))
 
@@ -112,6 +114,9 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
     elapsed = time.perf_counter() - s
     print(f"deploy {clsp_file} with {amount} mojos to {treehash} in {elapsed:0.2f} seconds.")
     print(f"coin_id: {coin.get_hash().hex()}")
+    with open('log.txt', 'a') as log_file:
+        log_file.write("Seed for {} coin: {}\n".format(clsp_file,seed) + "Coin_id: {}\n".format(coin.get_hash().hex()))
+    log_file.close()
 
     return coin, private_key, public_key
 
@@ -189,9 +194,9 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
         )
     json_string=spend_bundle.to_json_dict()    
     print_json(json_string)
-    #write to file for reference
-    with open('spend_bundle.json', 'w') as outfile:
-        json.dump(json_string, outfile)
-    outfile.close()    
+    #write to normal looking spend_bundle.json file for reference
+    with open('spend_bundle.json', 'w') as spend_bundle_file:
+        json.dump(json_string, spend_bundle_file, indent=4)
+    spend_bundle_file.close()    
     status = push_tx(spend_bundle)
     print_json(status)
