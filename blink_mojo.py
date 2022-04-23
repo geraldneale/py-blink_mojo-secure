@@ -32,12 +32,12 @@ def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
+msg=bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
 #define the following variables based on your needs
 #anon_wallet = "xch1q3mdtrl999s0mdf0ud3sssfuatldq5hshlllj8l33uwjd4yj422q56d7h4" #for example
 #known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9" #for example
 
-msg=bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
-# config/config.yaml
+
 config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
 self_hostname = config["self_hostname"] # localhost
 full_node_rpc_port = config["full_node"]["rpc_port"] # 8555
@@ -91,8 +91,6 @@ async def send_money_async(amount, address, fee=100):
         wallet_client.close()
         await wallet_client.await_closed()
 
-#send_money(10000,"txch1y9vvu4t3dd03w7gvvq5jn2ff7ckze5jc8uk3ek8fmahwrufw0jtq0wwgw7",100) #for example
-#sometimes useful to run manually like this with higher fees to push 'INVALID_FEE_TOO_CLOSE_TO_ZERO' though in tandem
 def send_money(amount, address, fee=2):
     return asyncio.run(send_money_async(amount, address, fee))
 
@@ -123,7 +121,6 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
 
     return coin, private_key, public_key
 
-# opc '()'
 def solution_for_faucet(anon_wallet) -> Program:
     return Program.to([destination_puzzle_hash(anon_wallet)])
 
@@ -183,7 +180,7 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     sig4 = AugSchemeMPL.sign(decoy_value_coin[1], DATA_TO_SIGN + bytes.fromhex(decoy_value_coin[0].get_hash().hex()) + ADD_DATA)
     signature: G2Element = AugSchemeMPL.aggregate([sig1, sig2, sig3, sig4])
 
-    # SpendBundle
+    #spendBundle
     spend_bundle = SpendBundle(
             # coin spends
             [
@@ -197,7 +194,7 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
         )
     json_string=spend_bundle.to_json_dict()    
     print_json(json_string)
-    #write to normal looking spend_bundle.json file for reference
+    #for reference only
     with open('spend_bundle.json', 'w') as spend_bundle_file:
         json.dump(json_string, spend_bundle_file, indent=4)
     spend_bundle_file.close()    
