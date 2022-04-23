@@ -115,7 +115,10 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
     print(f"deploy {clsp_file} with {amount} mojos to {treehash} in {elapsed:0.2f} seconds.")
     print(f"coin_id: {coin.get_hash().hex()}")
     with open('log.txt', 'a') as log_file:
-        log_file.write("Seed for {} coin: {}\n".format(clsp_file,seed) + "Coin_id: {}\n".format(coin.get_hash().hex()))
+        prefix_name=clsp_file.split('.')
+        log_file.write("{}_private_key: PrivateKey = AugSchemeMPL.key_gen({}".format(prefix_name[0],seed) + ")\n" + \
+            "{}_public_key: G1Element = {}_private_key.get_g1()\n".format(prefix_name[0], prefix_name[0]) + \
+                "{}_coin = get_coin(\"{}\"), {}_private_key, {}_public_key\n\n".format(prefix_name[0], coin.get_hash().hex(), prefix_name[0], prefix_name[0]))
     log_file.close()
 
     return coin, private_key, public_key
