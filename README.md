@@ -28,10 +28,12 @@ You should see:
 `"status": "SUCCESS",
  "success": true`
  
-Conclusion: Using this technique directs the value equivalent of the needs_privacy_coin intentionally to anon_wallet, but stops it's lineage and leaves the auditor without certainty if the value of the needs_privacy_coin ended up in anon_wallet or known_wallet. Chia-blockchain offers major privacy opportunities in three forms, in the opinion of the author, which are:
-1) Puzzle hashes for smart coins represent arbitrary logic(CREATE_COIN etc). If we request a faucet to send value to that puzzle hash then we control that logic anonymously
-2) In Chialisp everything is evaluated at the instant of block formation by nature of it being a functional programming language. Therefore value is moved aribitrarily around a spend bundle to CREATE_COIN outputs in need of value. If there is more than one CREATE_COIN with deficit value in a spend bundle then it introduces doubt of the source->destination relationship of value. THis is what I call the "blink" in blink_mojo.
-3) The certainty of which coins went into this spend bundle in mempool canNOT be reverse engineered from the blockchain after block formation due to the magic of BLS aggregated signatures. This same feature is used within the spend bundle of blink_mojo to secure each coin with its own BLS key pair so that each of the four puzzle_reals looks unassociated.  
+Conclusion: Using this technique directs the value equivalent of the needs_privacy_coin intentionally to anon_wallet, but stops it's lineage and leaves the auditor without certainty if the value of the needs_privacy_coin ended up in anon_wallet or known_wallet. 
+
+Chia-blockchain offers major privacy opportunities in three forms, in the opinion of the author, which are:
+1) In Chialisp everything is evaluated at the instant of block formation by nature of it being a functional programming language. Therefore value is moved aribitrarily around a spend bundle to CREATE_COIN outputs in need of value. If there is more than one CREATE_COIN with deficit value in a spend bundle then it introduces doubt of the source->destination relationship of value. This is what I call the "blink" in blink_mojo.
+2) Puzzle hashes for smart coins represent arbitrary logic(CREATE_COIN etc). If we request a faucet to send value to that puzzle hash then we control that logic anonymously
+4) The certainty of which coins went into this spend bundle in mempool canNOT be reverse engineered from the blockchain after block formation due to the magic of BLS aggregated signatures. This same feature is used within the spend bundle of blink_mojo to secure each coin with its own BLS key pair so that each of the four puzzle_reals looks unassociated.  
 
 Please try it with _in testnet only_. If used in mainnet it is at your own risk.
 
