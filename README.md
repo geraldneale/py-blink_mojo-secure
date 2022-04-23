@@ -33,7 +33,7 @@ Conclusion: Using this technique directs the value equivalent of the needs_priva
 2) In Chialisp everything is evaluated at the instant of block formation by nature of it being a functional programming language. Therefore value is moved aribitrarily around a spend bundle to CREATE_COIN outputs in need of value. If there is more than one CREATE_COIN with deficit value in a spend bundle then it introduces doubt of the source->destination relationship of value. THis is what I call the "blink" in blink_mojo.
 3) The certainty of which coins went into this spend bundle in mempool canNOT be reverse engineered from the blockchain after block formation due to the magic of BLS aggregated signatures. This same feature is used within the spend bundle of blink_mojo to secure each coin with its own BLS key pair so that each of the four puzzle_reals looks unassociated.  
 
-Please try it with _in testnet only_. If used in mainnet stick with the default values and it is at your own risk.
+Please try it with _in testnet only_. If used in mainnet it is at your own risk.
 
 xch1hv4gj4vvdsyzn9hrhy9tn6hu6jwk82tyrs3t4r33468x642myjws8kh8xl
 
