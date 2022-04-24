@@ -91,7 +91,7 @@ async def send_money_async(amount, address, fee=100):
         wallet_client.close()
         await wallet_client.await_closed()
 
-def send_money(amount, address, fee=2):
+def send_money(amount, address, fee):
     return asyncio.run(send_money_async(amount, address, fee))
 
 def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
