@@ -20,28 +20,31 @@ from chia.consensus.default_constants import DEFAULT_CONSTANTS
 from chia.util.ints import uint16, uint64
 from chia.wallet.transaction_record import TransactionRecord
 
-def destination_puzzle_hash(address):
-    if address.startswith(("xch","txch")):
-        if address.startswith("txch"):
-            puzzle_hash = decode_puzzle_hash(address[1:])
-        else:
-            puzzle_hash = decode_puzzle_hash(address)    
-    return puzzle_hash
+# def destination_puzzle_hash(address):
+#     print("Address: {}".format(address))
+#     if address.startswith(("xch","txch")):
+#         if address.startswith("txch"):
+#             puzzle_hash = decode_puzzle_hash(address[1:])        
+#         else:
+#             puzzle_hash = decode_puzzle_hash(address)
+#             print("Puzzle Hash: {}".format(puzzle_hash))    
+#     return puzzle_hash
 
 def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
-msg=bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
+msg = bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
 #define the following variables based on your needs
 #anon_wallet = "xch1q3mdtrl999s0mdf0ud3sssfuatldq5hshlllj8l33uwjd4yj422q56d7h4" #for example
 #known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9" #for example
-
 
 config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
 self_hostname = config["self_hostname"] # localhost
 full_node_rpc_port = config["full_node"]["rpc_port"] # 8555
 wallet_rpc_port = config["wallet"]["rpc_port"] # 9256
+ADD_DATA = DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA #get genesis challenge(works for mainnet)
+#ADD_DATA = bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2")  #genesis challenge(works for testnet10)
 
 async def get_coin_async(coin_id: str):
     try:
@@ -122,13 +125,13 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
     return coin, private_key, public_key
 
 def solution_for_faucet(anon_wallet) -> Program:
-    return Program.to([destination_puzzle_hash(anon_wallet)])
+    return Program.to([decode_puzzle_hash(anon_wallet)])
 
 def solution_for_needs_privacy() -> Program:
     return Program.to([])
 
 def solution_for_decoy(known_wallet) -> Program:
-    return Program.to([destination_puzzle_hash(known_wallet)])
+    return Program.to([decode_puzzle_hash(known_wallet)])
 
 def solution_for_decoy_value() -> Program:
     return Program.to([])
@@ -172,12 +175,11 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     )
 
     #signature
-    DATA_TO_SIGN = msg #arbitrary message
-    ADD_DATA= DEFAULT_CONSTANTS.AGG_SIG_ME_ADDITIONAL_DATA #genesis challenge
-    sig1 = AugSchemeMPL.sign(faucet_coin[1], DATA_TO_SIGN + bytes.fromhex(faucet_coin[0].get_hash().hex()) + ADD_DATA)
-    sig2 = AugSchemeMPL.sign(needs_privacy_coin[1], DATA_TO_SIGN + bytes.fromhex(needs_privacy_coin[0].get_hash().hex()) + ADD_DATA)
-    sig3 = AugSchemeMPL.sign(decoy_coin[1], DATA_TO_SIGN + bytes.fromhex(decoy_coin[0].get_hash().hex()) + ADD_DATA)
-    sig4 = AugSchemeMPL.sign(decoy_value_coin[1], DATA_TO_SIGN + bytes.fromhex(decoy_value_coin[0].get_hash().hex()) + ADD_DATA)
+    #DATA_TO_SIGN = msg #arbitrary message
+    sig1 = AugSchemeMPL.sign(faucet_coin[1], msg + bytes.fromhex(faucet_coin[0].get_hash().hex()) + ADD_DATA)
+    sig2 = AugSchemeMPL.sign(needs_privacy_coin[1], msg + bytes.fromhex(needs_privacy_coin[0].get_hash().hex()) + ADD_DATA)
+    sig3 = AugSchemeMPL.sign(decoy_coin[1], msg + bytes.fromhex(decoy_coin[0].get_hash().hex()) + ADD_DATA)
+    sig4 = AugSchemeMPL.sign(decoy_value_coin[1], msg + bytes.fromhex(decoy_value_coin[0].get_hash().hex()) + ADD_DATA)
     signature: G2Element = AugSchemeMPL.aggregate([sig1, sig2, sig3, sig4])
 
     #spendBundle
