@@ -20,16 +20,6 @@ from chia.consensus.default_constants import DEFAULT_CONSTANTS
 from chia.util.ints import uint16, uint64
 from chia.wallet.transaction_record import TransactionRecord
 
-# def destination_puzzle_hash(address):
-#     print("Address: {}".format(address))
-#     if address.startswith(("xch","txch")):
-#         if address.startswith("txch"):
-#             puzzle_hash = decode_puzzle_hash(address[1:])        
-#         else:
-#             puzzle_hash = decode_puzzle_hash(address)
-#             print("Puzzle Hash: {}".format(puzzle_hash))    
-#     return puzzle_hash
-
 def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
