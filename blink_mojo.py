@@ -24,7 +24,7 @@ def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
-msg = bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
+#msg = bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
 #define the following variables based on your needs
 #anon_wallet = "xch1q3mdtrl999s0mdf0ud3sssfuatldq5hshlllj8l33uwjd4yj422q56d7h4" #for example
 #known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9" #for example
@@ -98,6 +98,8 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
     #print("Private key for {}: {}".format(clsp_file, private_key))
     public_key: G1Element = private_key.get_g1()
     #print("Public key for {}: {}".format(clsp_file, public_key))
+    msg = bytes.fromhex(secrets.token_hex(16))
+    print("Message: {}".format(msg))
     mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg)
     # cdv clsp treehash
     treehash = mod.get_tree_hash()
@@ -111,10 +113,12 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
         prefix_name=clsp_file.split('.')
         log_file.write("{}_private_key: PrivateKey = AugSchemeMPL.key_gen({}".format(prefix_name[0],seed) + ")\n" + \
             "{}_public_key: G1Element = {}_private_key.get_g1()\n".format(prefix_name[0], prefix_name[0]) + \
-                "{}_coin = get_coin(\"{}\"), {}_private_key, {}_public_key\n\n".format(prefix_name[0], coin.get_hash().hex(), prefix_name[0], prefix_name[0]))
+            "{}_msg = {}\n".format(prefix_name[0], msg) + \
+                "{}_coin = get_coin(\"{}\"), {}_private_key, {}_public_key, {}_msg\n\n".format(prefix_name[0], coin.get_hash().hex(), prefix_name[0], prefix_name[0],prefix_name[0])
+                )
     log_file.close()
-
-    return coin, private_key, public_key
+    
+    return coin, private_key, public_key, msg 
 
 def solution_for_faucet(anon_wallet) -> Program:
     return Program.to([decode_puzzle_hash(anon_wallet)])
@@ -147,31 +151,31 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     # coin information, puzzle_reveal, and solution
     faucet_spend = CoinSpend(
         faucet_coin[0],
-       load_clvm(FAUCET_CLSP, package_or_requirement=__name__).curry(faucet_coin[2],msg),
+       load_clvm(FAUCET_CLSP, package_or_requirement=__name__).curry(faucet_coin[2],faucet_coin[3]),
         solution_for_faucet(anon_wallet)
     )
     needs_privacy_spend = CoinSpend(
         needs_privacy_coin[0],
-        load_clvm(NEEDS_PRIVACY_CLSP, package_or_requirement=__name__).curry(needs_privacy_coin[2],msg),
+        load_clvm(NEEDS_PRIVACY_CLSP, package_or_requirement=__name__).curry(needs_privacy_coin[2],needs_privacy_coin[3]),
         solution_for_needs_privacy()
     )
     decoy_spend = CoinSpend(
         decoy_coin[0],
-       load_clvm(DECOY_CLSP, package_or_requirement=__name__).curry(decoy_coin[2],msg),
+       load_clvm(DECOY_CLSP, package_or_requirement=__name__).curry(decoy_coin[2],decoy_coin[3]),
         solution_for_decoy(known_wallet)
     )
     decoy_value_spend = CoinSpend(
         decoy_value_coin[0],
-        load_clvm(DECOY_VALUE_CLSP, package_or_requirement=__name__).curry(decoy_value_coin[2],msg),
+        load_clvm(DECOY_VALUE_CLSP, package_or_requirement=__name__).curry(decoy_value_coin[2],decoy_value_coin[3]),
         solution_for_decoy_value()
     )
 
     #signature
     #DATA_TO_SIGN = msg #arbitrary message
-    sig1 = AugSchemeMPL.sign(faucet_coin[1], msg + bytes.fromhex(faucet_coin[0].get_hash().hex()) + ADD_DATA)
-    sig2 = AugSchemeMPL.sign(needs_privacy_coin[1], msg + bytes.fromhex(needs_privacy_coin[0].get_hash().hex()) + ADD_DATA)
-    sig3 = AugSchemeMPL.sign(decoy_coin[1], msg + bytes.fromhex(decoy_coin[0].get_hash().hex()) + ADD_DATA)
-    sig4 = AugSchemeMPL.sign(decoy_value_coin[1], msg + bytes.fromhex(decoy_value_coin[0].get_hash().hex()) + ADD_DATA)
+    sig1 = AugSchemeMPL.sign(faucet_coin[1], faucet_coin[3] + bytes.fromhex(faucet_coin[0].get_hash().hex()) + ADD_DATA)
+    sig2 = AugSchemeMPL.sign(needs_privacy_coin[1], needs_privacy_coin[3] + bytes.fromhex(needs_privacy_coin[0].get_hash().hex()) + ADD_DATA)
+    sig3 = AugSchemeMPL.sign(decoy_coin[1], decoy_coin[3] + bytes.fromhex(decoy_coin[0].get_hash().hex()) + ADD_DATA)
+    sig4 = AugSchemeMPL.sign(decoy_value_coin[1], decoy_value_coin[3] + bytes.fromhex(decoy_value_coin[0].get_hash().hex()) + ADD_DATA)
     signature: G2Element = AugSchemeMPL.aggregate([sig1, sig2, sig3, sig4])
 
     #spendBundle
