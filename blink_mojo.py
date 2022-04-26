@@ -24,7 +24,6 @@ def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
-#msg = bytes.fromhex("2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824")
 #define the following variables based on your needs
 #anon_wallet = "xch1q3mdtrl999s0mdf0ud3sssfuatldq5hshlllj8l33uwjd4yj422q56d7h4" #for example
 #known_wallet = "xch1vemls6m0c65shfmecadwq87tjs6x6jdmt2ktuucd87qaqh9pq2eqcfwqf9" #for example
@@ -49,9 +48,6 @@ async def get_coin_async(coin_id: str):
         full_node_client.close()
         await full_node_client.await_closed()
 
-#faucet_private_key: PrivateKey = AugSchemeMPL.key_gen(b'H\r\xc8_\xd9#\xed\xd3g\xa26W\x0bR\xfe\xeb\xb8\xe9%\x0es_elc\xa5\xea\xb1s\x8e\xf2\x91') #for example
-#faucet_public_key: G1Element = faucet_private_key.get_g1() #for example
-#faucet_coin=get_coin("56c68f1f840ff522fcd4ff7676d69725d7f39b35d15c01cc53a2cb0d012855d9"),faucet_private_key,faucet_public_key #for example
 def get_coin(coin_id: str):
     return asyncio.run(get_coin_async(coin_id))
 
