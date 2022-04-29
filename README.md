@@ -21,8 +21,8 @@ Use
 -------
 ```
 $ python3 -i blink_mojo.py
-$ faucet_coin=deploy_smart_coin(FAUCET_CLSP,100) NOTE: coin_id and BLS seed gets logged for reuse later if from another wallet.
-$ needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)` NOTE: coin_id and BLS seed gets logged for reuse later if from another wallet.
+$ faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)
+$ needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)
 $ decoy_coin=deploy_smart_coin(DECOY_CLSP,100)
 $ decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000)
 ```
