@@ -6,25 +6,38 @@ Chialisp money privacy tool using aggregated BLS signatures for security and Pyt
 * Need to update your own private key, public key, anonymous wallet and known wallet in blink_mojo.py file.
 
 
-Basic steps for *NIX are:
-1. `python3 -m venv venv`
-2. `. ./venv/bin/activate`
-3. `pip3 install -r requirements.txt`
-4. `python3 -i blink_mojo.py`
-5. `faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)` NOTE: coin_id and BLS seed gets logged for reuse later if from another wallet.
-6. `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)` NOTE: coin_id and BLS seed gets logged for reuse later if from another wallet.
-7. `decoy_coin=deploy_smart_coin(DECOY_CLSP,100)`
-8. `decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000)`
-9. As a final sequence:
+Install
+-------
 
-   a. `anon_wallet = "xch<whateverwalletaddressyoudesire>"`
+Create and activate a virtualenv (first two lines), then install requirements.
+
+```
+$ python3 -m venv venv
+$ . ./venv/bin/activate
+$ pip3 install -r requirements.txt
+```
+
+Use
+-------
+```
+$ python3 -i blink_mojo.py`\
+$ faucet_coin=deploy_smart_coin(FAUCET_CLSP,100) NOTE: coin_id and BLS seed gets logged for reuse later if from another wallet.
+$ needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)` NOTE: coin_id and BLS seed gets logged for reuse later if from another wallet.
+$ decoy_coin=deploy_smart_coin(DECOY_CLSP,100)
+$ decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000)
+```
+
+As a final sequence
+------
+```
+$ anon_wallet = "xch<whateverwalletaddressyoudesire>"
+$ known_wallet = "xch<whateverotherwalletaddressyoudesire>"
+$ blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)
+```   
    
-   b. `known_wallet = "xch<whateverotherwalletaddressyoudesire>"`
-   
-   c. `blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)`
-   
-   
-You should see:
+You should see
+--------
+
 `"status": "SUCCESS",
  "success": true`
  
