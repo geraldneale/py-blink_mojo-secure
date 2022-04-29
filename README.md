@@ -20,7 +20,7 @@ $ pip3 install -r requirements.txt
 Use
 -------
 ```
-$ python3 -i blink_mojo.py`\
+$ python3 -i blink_mojo.py
 $ faucet_coin=deploy_smart_coin(FAUCET_CLSP,100) NOTE: coin_id and BLS seed gets logged for reuse later if from another wallet.
 $ needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)` NOTE: coin_id and BLS seed gets logged for reuse later if from another wallet.
 $ decoy_coin=deploy_smart_coin(DECOY_CLSP,100)
