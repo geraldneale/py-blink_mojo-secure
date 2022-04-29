@@ -41,7 +41,10 @@ You should see
 `"status": "SUCCESS",
  "success": true`
  
-Conclusion: Using this technique directs the value equivalent of the needs_privacy_coin intentionally to anon_wallet, but stops it's lineage and leaves the auditor without certainty if the value of the needs_privacy_coin ended up in anon_wallet or known_wallet. 
+Conclusion
+---------
+
+Using this technique one can direct the equivalent value of the needs_privacy_coin intentionally to anon_wallet, but there is no lineage and it leaves any auditor, including the user of blink_mojo, without certainty if the mojos that were once in the needs_privacy_coin ended up in anon_wallet or known_wallet. 
 
 Chia-blockchain offers major privacy opportunities in three forms; which are:
 1) In Chialisp everything is evaluated at the instant of block formation by nature of it being a functional programming language. Therefore value is moved aribitrarily around a spend bundle to CREATE_COIN outputs in need of value. If there is more than one CREATE_COIN with deficit value in a spend bundle then it introduces doubt of the source->destination relationship of value. This is what I call the "blink" in blink_mojo.
