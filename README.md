@@ -3,7 +3,7 @@ Chialisp money privacy tool using aggregated BLS signatures for security and Pyt
 
 * Runs on testnet10 by default.
 * Requires full node.
-* Need to update your own private key, public key, anonymous wallet and known wallet in blink_mojo.py file.
+* Need to update your own anonymous wallet and known wallet in blink_mojo.py file or set from the prompt; eg `anon_wallet = "xch1q3mdtrl999s0mdf0ud3sssfuatldq5hshlllj8l33uwjd4yj422q56d7h4"`.
 
 
 Install
@@ -19,6 +19,8 @@ $ pip3 install -r requirements.txt
 
 Use
 -------
+Will deploy and send coins from whatever wallet is synced and last utilized on this full node.
+
 ```
 $ python3 -i blink_mojo.py
 $ faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)
@@ -53,6 +55,14 @@ Chia-blockchain offers major privacy opportunities in three forms; which are:
 
 Please try it with _in testnet only_. If used in mainnet it is at your own risk.
 
-xch1hv4gj4vvdsyzn9hrhy9tn6hu6jwk82tyrs3t4r33468x642myjws8kh8xl
+Known issues and todos
+---------
+1) Test with standalone wallet.
+2) Seperate out faucet_coin and needs_privacy_coin address formation so those coins can be created from a faucet and seperate wallet respectively.
 
-http://mojopuzzler.org
+Also check out
+------------
+Twitter @geraldneale
+http://mojopuzzler.org - chialisp resources for the capable beginner.
+Discord Mojo Puzzler - https://discord.gg/SMFHEE2Z
+xch1hv4gj4vvdsyzn9hrhy9tn6hu6jwk82tyrs3t4r33468x642myjws8kh8xl
