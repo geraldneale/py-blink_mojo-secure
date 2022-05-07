@@ -9,32 +9,40 @@ Chialisp money privacy tool using aggregated BLS signatures for security and Pyt
 Install
 -------
 
-Create and activate a virtualenv (first two lines), then install requirements.
+Clone repository, go into it, make and activate a virtualenv, and then install requirements.
 
 ```
+$ git clone https://github.com/geraldneale/py-blink_mojo-secure.git
+$ cd py-blink_mojo-secure
 $ python3 -m venv venv
 $ . ./venv/bin/activate
 $ pip3 install -r requirements.txt
 ```
 
-Use
+Run
 -------
-Will deploy and send coins from whatever wallet is synced and last utilized on this full node.
+Start the program and set the wallet variables to your own.
 
 ```
 $ python3 -i blink_mojo.py
-$ faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)
-$ needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)
-$ decoy_coin=deploy_smart_coin(DECOY_CLSP,100)
-$ decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000)
+>> anon_wallet = "txch<whateverwalletaddressyoudesire>"
+>> known_wallet = "txch<whateverotherwalletaddressyoudesire>"
+```
+
+Use
+-------
+Will deploy and send coins from whatever wallet is synced and last utilized on this full node.
+```
+>> faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)
+>> needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)
+>> decoy_coin=deploy_smart_coin(DECOY_CLSP,100)
+>> decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000)
 ```
 
 As a final sequence
 ------
 ```
-$ anon_wallet = "xch<whateverwalletaddressyoudesire>"
-$ known_wallet = "xch<whateverotherwalletaddressyoudesire>"
-$ blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)
+>> blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)
 ```   
    
 You should see
