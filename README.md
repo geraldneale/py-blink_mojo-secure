@@ -39,7 +39,7 @@ Will deploy and send coins from whatever wallet is synced and last utilized on t
 >> decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000)
 ```
 
-As a final sequence
+Final command
 ------
 ```
 >> blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)
@@ -71,6 +71,9 @@ Known issues and todos
 Also check out
 ------------
 Twitter @geraldneale
+
 http://mojopuzzler.org - chialisp resources for the capable beginner.
+
 Discord Mojo Puzzler - https://discord.gg/SMFHEE2Z
+
 xch1hv4gj4vvdsyzn9hrhy9tn6hu6jwk82tyrs3t4r33468x642myjws8kh8xl
