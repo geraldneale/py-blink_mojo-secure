@@ -3,7 +3,7 @@ Chialisp money privacy tool using aggregated BLS signatures for security and Pyt
 
 * Runs on testnet10 by default.
 * Requires full node.
-* Need to update your own anonymous wallet and known wallet in blink_mojo.py file or set from the prompt; eg `anon_wallet = "xch1q3mdtrl999s0mdf0ud3sssfuatldq5hshlllj8l33uwjd4yj422q56d7h4"`.
+* Requires updating anonymous wallet and known wallet to your personal addresses. Can be edited into blink_mojo.py file or set at the prompt, as in: `anon_wallet = "txch<whateverwalletaddressyoudesire>"`
 
 
 Install
@@ -31,7 +31,7 @@ $ python3 -i blink_mojo.py
 
 Use
 -------
-Will deploy and send coins from whatever wallet is synced and last utilized on this full node.
+Deploys and sends coins from whatever wallet is synced and last utilized on your node.
 ```
 >> faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)
 >> needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)
