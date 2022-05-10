@@ -145,7 +145,8 @@ def get_faucet_coin_address():
         log_file.write("{}_private_key: PrivateKey = AugSchemeMPL.key_gen({}".format(prefix_name[0],seed) + ")\n" + \
             "{}_public_key: G1Element = {}_private_key.get_g1()\n".format(prefix_name[0], prefix_name[0]) + \
             "{}_msg = {}\n".format(prefix_name[0], msg) + \
-                "{}_coin = get_coin(\"coinid from get_faucet_coin_info\"), {}_private_key, {}_public_key, {}_msg\n\n".format(prefix_name[0],address, prefix_name[0],prefix_name[0]) 
+                "{}_coin = get_coin(\"coinid from get_faucet_coin_info\"), {}_private_key, {}_public_key, {}_msg\n\n"\
+                       .format(prefix_name[0],prefix_name[0],prefix_name[0],prefix_name[0]) 
                 )
     log_file.close()
     
