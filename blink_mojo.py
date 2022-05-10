@@ -145,13 +145,16 @@ def get_faucet_coin_address():
         log_file.write("{}_private_key: PrivateKey = AugSchemeMPL.key_gen({}".format(prefix_name[0],seed) + ")\n" + \
             "{}_public_key: G1Element = {}_private_key.get_g1()\n".format(prefix_name[0], prefix_name[0]) + \
             "{}_msg = {}\n".format(prefix_name[0], msg) + \
-                "{}_coin = get_coin(\"coinid from get_faucet_coin_info\"), {}_private_key, {}_public_key, {}_msg\n\n".format(prefix_name[0],address, prefix_name[0], prefix_name[0],prefix_name[0]) 
+                "{}_coin = get_coin(\"coinid from get_faucet_coin_info\"), {}_private_key, {}_public_key, {}_msg\n\n".format(prefix_name[0],address, prefix_name[0],prefix_name[0]) 
                 )
     log_file.close()
     
     return address
 
-#this api on works for mainnet. for testnet you need to $cdv rpc coinrecords --by puzhash 0xdeadbeef -nd to get the coinid 
+#this api only works for mainnet. 
+#for testnet you need to: chia wallet send -a 0.000000000010 -m 0.000000000010 -t txchabcxyz098123 --override
+# cdv decode txchabcxyz098123
+# $cdv rpc coinrecords --by puzhash 0xdeadbeef -nd to get the coinid and paste into log_faucet.txt
 def get_faucet_coin_info(address, faucet_coin_amount):
     root_url = "https://api2.spacescan.io"
     addr_url = f"{root_url}/1/xch/address/txns"
