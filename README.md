@@ -27,16 +27,17 @@ Start the program and set the wallet variables to your own.
 $ python3 -i blink_mojo.py
 >> anon_wallet = "txch<whateverwalletaddressyoudesire>"
 >> known_wallet = "txch<whateverotherwalletaddressyoudesire>"
+>> vaue_amount = 1000000000000
 ```
 
 Use
 -------
 Deploys and sends coins from whatever wallet is synced and last utilized on your node.
 ```
->> faucet_coin=deploy_smart_coin(FAUCET_CLSP,100)
->> needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,1000)
->> decoy_coin=deploy_smart_coin(DECOY_CLSP,100)
->> decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,1000)
+>> faucet_coin=deploy_smart_coin(FAUCET_CLSP,1,10)
+>> needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
+>> decoy_coin=deploy_smart_coin(DECOY_CLSP,1,10)
+>> decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,value_amount)
 ```
 
 Final command
@@ -65,8 +66,7 @@ Please try it with _in testnet only_. If used in mainnet it is at your own risk.
 
 Known issues and todos
 ---------
-1) Test with standalone wallet.
-2) Seperate out faucet_coin and needs_privacy_coin address formation so those coins can be created from a faucet and seperate wallet respectively.
+1) Todo: test with standalone wallet.
 
 Also check out
 ------------
