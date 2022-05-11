@@ -66,7 +66,8 @@ Please try it with _in testnet only_. If used in mainnet it is at your own risk.
 
 Known issues and todos
 ---------
-1) Todo: test with standalone wallet.
+1) Todo: Check to make sure in correct wallet at `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)`
+2) Todo: test with standalone wallet.
 
 Also check out
 ------------
