@@ -28,7 +28,7 @@ FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "
 #define the following variables based on your needs
 anon_wallet = "txch1qtx68z7xa05yvm9pxkyexkvewvnfvhgtcy54zzf9gln5yxkj9v4svna5rz" #for example
 known_wallet = "txch1rdpgdacewwq0l8p4r9a4xzu3htccjqc4ynvgxnz7scn0569u7gfsn00mue" #for example
-value_amount = 1000
+value_amount = 1000000000000
 #switch ADD_DATA for environment
 #ADD_DATA = bytes.fromhex("ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb") #genesis challenge(works for mainnet)
 ADD_DATA = bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2")  #genesis challenge(works for testnet10)
@@ -55,7 +55,7 @@ def get_coin(coin_id: str):
 
 # Send from your default wallet on your machine
 # Wallet has to be running, e.g., chia start wallet
-async def send_money_async(amount, address, fee=100):
+async def send_money_async(amount, address, fee=10):
     wallet_id = "1"
     try:
         print(f"sending {amount} to {address}...")
@@ -87,7 +87,8 @@ async def send_money_async(amount, address, fee=100):
 def send_money(amount, address, fee):
     return asyncio.run(send_money_async(amount, address, fee))
 
-def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
+#needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
+def deploy_smart_coin(clsp_file: str, amount: uint64, fee=10):
     s = time.perf_counter()
     # load coins (compiled and serialized, same content as clsp.hex)
     seed = secrets.token_bytes(32)
@@ -122,6 +123,9 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=100):
     
     return coin, private_key, public_key, msg
 
+#this function is to obtain a target smart coin address to paste directly into a faucet
+#an alternative is to have the faucet send to a disposable wallet address first and
+#access it via your node and do the following from within blink_mojo:   faucet_coin=deploy_smart_coin(FAUCET_CLSP,1) #for example
 def get_faucet_coin_address():
     s = time.perf_counter()
     #form specific key pair
@@ -145,17 +149,20 @@ def get_faucet_coin_address():
         log_file.write("{}_private_key: PrivateKey = AugSchemeMPL.key_gen({}".format(prefix_name[0],seed) + ")\n" + \
             "{}_public_key: G1Element = {}_private_key.get_g1()\n".format(prefix_name[0], prefix_name[0]) + \
             "{}_msg = {}\n".format(prefix_name[0], msg) + \
-                "{}_coin = get_coin(\"coinid from get_faucet_coin_info\"), {}_private_key, {}_public_key, {}_msg\n\n"\
-                       .format(prefix_name[0],prefix_name[0],prefix_name[0],prefix_name[0]) 
+                "{}_coin = get_coin(\"coinid from get_faucet_coin_info\"), {}_private_key, {}_public_key, {}_msg\n\n".format(prefix_name[0],prefix_name[0], prefix_name[0],prefix_name[0]) 
                 )
     log_file.close()
     
     return address
 
-#this api only works for mainnet. 
-#for testnet you need to: chia wallet send -a 0.000000000010 -m 0.000000000010 -t txchabcxyz098123 --override
-# cdv decode txchabcxyz098123
-# $cdv rpc coinrecords --by puzhash 0xdeadbeef -nd to get the coinid and paste into log_faucet.txt
+
+#checks online for coinid needed to complete commands in log_faucet.txt
+#then those commans to be copied and pasted into blink_mojo
+#NOTE:the spacescan.io api only works for mainnet. 
+#for testnet if you need to use this function, you need to send manually as follows: 
+#chia wallet send -a 0.000000000010 -m 0.000000000010 -t ttxch1qtx68z7xa05yvm9pxkyexkvewvnfvhgtcy54zzf9gln5yxkj9v4svna5rz --override #for example
+#cdv decode txch1qtx68z7xa05yvm9pxkyexkvewvnfvhgtcy54zzf9gln5yxkj9v4svna5rz #for example
+#cdv rpc coinrecords --by puzhash 0xdeadbeef -nd to get the coinid and paste into log_faucet.txt #for example
 def get_faucet_coin_info(address, faucet_coin_amount):
     root_url = "https://api2.spacescan.io"
     addr_url = f"{root_url}/1/xch/address/txns"
