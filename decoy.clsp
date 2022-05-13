@@ -1,9 +1,9 @@
-(mod (PK MSG known_wallet)
+(mod (PK MSG AMT known_wallet)
    (defconstant AGG_SIG_ME 50)
    (defconstant CREATE_COIN 51)
 
 (list 
 (list AGG_SIG_ME PK MSG)
-(list CREATE_COIN known_wallet 1000)
+(list CREATE_COIN known_wallet AMT)
 )
 )
