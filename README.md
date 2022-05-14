@@ -27,7 +27,7 @@ Start the program and set the wallet variables to your own.
 $ python3 -i blink_mojo.py
 >> anon_wallet = "txch<whateverwalletaddressyoudesire>"
 >> known_wallet = "txch<whateverotherwalletaddressyoudesire>"
->> vaue_amount = 1000000000000
+>> value_amount = 1000000000000
 ```
 
 Use
