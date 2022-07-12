@@ -1,5 +1,5 @@
 # py-blink_mojo-secure
-Chialisp money privacy tool using aggregated BLS signatures for security and Python3 for automation.
+Chialisp money privacy tool using aggregated  <a href="https://www.iacr.org/archive/asiacrypt2001/22480516.pdf">Boneh-Lynn-Shacham (BLS) signatures</a> for security and Python3 for automation.
 
 * Runs on testnet10 by default.
 * Requires full node.
