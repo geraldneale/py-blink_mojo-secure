@@ -234,8 +234,7 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
         solution_for_decoy_value()
     )
 
-    #signature
-    #DATA_TO_SIGN = msg #arbitrary message
+    #signatures
     sig1 = AugSchemeMPL.sign(faucet_coin[1], faucet_coin[3] + bytes.fromhex(faucet_coin[0].get_hash().hex()) + ADD_DATA)
     sig2 = AugSchemeMPL.sign(needs_privacy_coin[1], needs_privacy_coin[3] + bytes.fromhex(needs_privacy_coin[0].get_hash().hex()) + ADD_DATA)
     sig3 = AugSchemeMPL.sign(decoy_coin[1], decoy_coin[3] + bytes.fromhex(decoy_coin[0].get_hash().hex()) + ADD_DATA)
