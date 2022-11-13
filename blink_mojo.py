@@ -111,13 +111,13 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=10):
     coin = send_money(amount, address, fee)
     elapsed = time.perf_counter() - s
     print(f"deploy {clsp_file} with {amount} mojos to {treehash} in {elapsed:0.2f} seconds.")
-    print(f"coin_id: {coin.get_hash().hex()}")
+    print(f"coin_id: {coin.name().hex()}")
     with open('log.txt', 'a') as log_file:
         prefix_name=clsp_file.split('.')
         log_file.write("{}_private_key: PrivateKey = AugSchemeMPL.key_gen({}".format(prefix_name[0],seed) + ")\n" + \
             "{}_public_key: G1Element = {}_private_key.get_g1()\n".format(prefix_name[0], prefix_name[0]) + \
             "{}_msg = {}\n".format(prefix_name[0], msg) + \
-                "{}_coin = get_coin(\"{}\"), {}_private_key, {}_public_key, {}_msg\n\n".format(prefix_name[0], coin.get_hash().hex(), prefix_name[0], prefix_name[0],prefix_name[0])
+                "{}_coin = get_coin(\"{}\"), {}_private_key, {}_public_key, {}_msg\n\n".format(prefix_name[0], coin.name().hex(), prefix_name[0], prefix_name[0],prefix_name[0])
                 )
     log_file.close()
     
@@ -235,10 +235,10 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     )
 
     #signatures
-    sig1 = AugSchemeMPL.sign(faucet_coin[1], faucet_coin[3] + bytes.fromhex(faucet_coin[0].get_hash().hex()) + ADD_DATA)
-    sig2 = AugSchemeMPL.sign(needs_privacy_coin[1], needs_privacy_coin[3] + bytes.fromhex(needs_privacy_coin[0].get_hash().hex()) + ADD_DATA)
-    sig3 = AugSchemeMPL.sign(decoy_coin[1], decoy_coin[3] + bytes.fromhex(decoy_coin[0].get_hash().hex()) + ADD_DATA)
-    sig4 = AugSchemeMPL.sign(decoy_value_coin[1], decoy_value_coin[3] + bytes.fromhex(decoy_value_coin[0].get_hash().hex()) + ADD_DATA)
+    sig1 = AugSchemeMPL.sign(faucet_coin[1], faucet_coin[3] + bytes.fromhex(faucet_coin[0].name().hex()) + ADD_DATA)
+    sig2 = AugSchemeMPL.sign(needs_privacy_coin[1], needs_privacy_coin[3] + bytes.fromhex(needs_privacy_coin[0].name().hex()) + ADD_DATA)
+    sig3 = AugSchemeMPL.sign(decoy_coin[1], decoy_coin[3] + bytes.fromhex(decoy_coin[0].name().hex()) + ADD_DATA)
+    sig4 = AugSchemeMPL.sign(decoy_value_coin[1], decoy_value_coin[3] + bytes.fromhex(decoy_value_coin[0].name().hex()) + ADD_DATA)
     signature: G2Element = AugSchemeMPL.aggregate([sig1, sig2, sig3, sig4])
 
     #spendBundle
