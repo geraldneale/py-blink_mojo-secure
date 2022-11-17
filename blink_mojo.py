@@ -165,6 +165,7 @@ def get_faucet_coin_address():
 #cdv rpc coinrecords --by puzhash 0xdeadbeef -nd to get the coinid and paste into log_faucet.txt #for example
 def get_faucet_coin_info(address, faucet_coin_amount):
     root_url = "https://api2.spacescan.io"
+    #addr_url = f"txch10/address/address/txns" #testnet10
     addr_url = f"{root_url}/1/xch/address/txns"
     while 1:
         print(f"checking for payments to {address}")
