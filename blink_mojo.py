@@ -107,7 +107,7 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=10):
     # cdv clsp treehash
     treehash = mod.get_tree_hash()
     # cdv encode - txch->testnet10 or xch->mainnet
-    address = encode_puzzle_hash(treehash, "xch")
+    address = encode_puzzle_hash(treehash, "txch")
     coin = send_money(amount, address, fee)
     elapsed = time.perf_counter() - s
     print(f"deploy {clsp_file} with {amount} mojos to {treehash} in {elapsed:0.2f} seconds.")
