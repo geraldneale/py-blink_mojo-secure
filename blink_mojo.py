@@ -141,8 +141,11 @@ def get_faucet_coin_address():
     mod = load_clvm(FAUCET_CLSP, package_or_requirement=__name__).curry(public_key,msg,value_amount)
     # cdv clsp treehash
     treehash = mod.get_tree_hash()
-    # cdv encode - txch->testnet10 or xch->mainnet
-    address = encode_puzzle_hash(treehash, "xch")
+    if ADD_DATA == bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2"):
+        chain_prefix = "txch"
+    else:
+        chain_prefix = "xch"    
+    address = encode_puzzle_hash(treehash, chain_prefix)
     print(f"Find a faucet and send a small amount of mojos to {address} ; for example 100 mojos")
     with open('log_faucet.txt', 'a') as log_file:
         prefix_name=FAUCET_CLSP.split('.')
