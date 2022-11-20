@@ -27,16 +27,15 @@ Start the program in interactive mode and set the wallet variables to your own.
 $ python3 -i blink_mojo.py
 >> anon_wallet = "txch<whateverwalletaddressyoudesire>"
 >> known_wallet = "txch<whateverotherwalletaddressyoudesire>"
->> value_amount = 1000000000000
 ```
 
 Use
 -------
 Deploys and sends coins from whatever wallet is synced and last utilized on your node.
 ```
->> faucet_coin=deploy_smart_coin(FAUCET_CLSP,1,10)
+>> faucet_coin=deploy_smart_coin(FAUCET_CLSP,1000000,1000)
 >> needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
->> decoy_coin=deploy_smart_coin(DECOY_CLSP,1,10)
+>> decoy_coin=deploy_smart_coin(DECOY_CLSP,1000000,1000)
 >> decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,value_amount)
 ```
 
@@ -66,11 +65,13 @@ Please try it with _in testnet only_. If used in mainnet it is at your own risk.
 
 Known issues and todos
 ---------
-1) Todo: Check to make sure in correct wallet at `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)`
+1) Todo: Text based message to user confirming they are in the correct synced wallet fingerprint at the step: `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)`
 2) Todo: test with standalone wallet.
 
 Also check out
 ------------
+https://github.com/geraldneale/blink_mojo - the original prove of concept with auditable examples on mainnet.
+
 Twitter @geraldneale
 
 http://mojopuzzler.org - chialisp resources for the capable beginner.
