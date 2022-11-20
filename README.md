@@ -65,8 +65,9 @@ Please try it with _in testnet only_. If used in mainnet it is at your own risk.
 
 Known issues and todos
 ---------
-1) Todo: Text based message to user confirming they are in the correct synced wallet fingerprint at the step: `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)`
-2) Todo: test with standalone wallet.
+1) Need to add fee to the final transaction using the blink_mojo() function to ensure fast completion. 
+2) Todo: Text based message to user confirming they are in the correct synced wallet fingerprint at the step: `needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)`
+3) Todo: test with standalone wallet.
 
 Also check out
 ------------
