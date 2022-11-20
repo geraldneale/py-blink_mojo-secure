@@ -28,7 +28,7 @@ FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "
 #define the following variables based on your needs
 anon_wallet = "txch1qtx68z7xa05yvm9pxkyexkvewvnfvhgtcy54zzf9gln5yxkj9v4svna5rz" #for example
 known_wallet = "txch1rdpgdacewwq0l8p4r9a4xzu3htccjqc4ynvgxnz7scn0569u7gfsn00mue" #for example
-value_amount = 1000000000000
+value_amount = 1000000000000 #for example
 #switch ADD_DATA for environment
 #ADD_DATA = bytes.fromhex("ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb") #genesis challenge(works for mainnet)
 ADD_DATA = bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2")  #genesis challenge(works for testnet10)
@@ -159,16 +159,15 @@ def get_faucet_coin_address():
     return address
 
 
-#checks online for coinid needed to complete commands in log_faucet.txt
-#then those commans to be copied and pasted into blink_mojo
+#checks online for coinid which may be needed later to complete the commands referenced in log_faucet.txt
+#copy and paste commands into a running blink_mojo as necessary
 #NOTE:the spacescan.io api only works for mainnet. 
-#for testnet if you need to use this function, you need to send manually as follows: 
-#chia wallet send -a 0.000000000010 -m 0.000000000010 -t ttxch1qtx68z7xa05yvm9pxkyexkvewvnfvhgtcy54zzf9gln5yxkj9v4svna5rz --override #for example
-#cdv decode txch1qtx68z7xa05yvm9pxkyexkvewvnfvhgtcy54zzf9gln5yxkj9v4svna5rz #for example
-#cdv rpc coinrecords --by puzhash 0xdeadbeef -nd to get the coinid and paste into log_faucet.txt #for example
+#for testnet if you need to use this function manually as follows: 
+#chia wallet send -a 0.000000000010 -m 0.000000000010 -t txch12345example67890 --override #for example
+#cdv decode txch12345example67890 #for example
+#cdv rpc coinrecords --by puzhash 0xdeadbeef -nd #for example to get the coinid and paste into log_faucet.txt
 def get_faucet_coin_info(address, faucet_coin_amount):
     root_url = "https://api2.spacescan.io"
-    #addr_url = f"txch10/address/address/txns" #testnet10
     addr_url = f"{root_url}/1/xch/address/txns"
     while 1:
         print(f"checking for payments to {address}")
