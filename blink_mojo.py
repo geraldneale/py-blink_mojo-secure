@@ -26,9 +26,9 @@ def print_json(dict):
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
 #define the following variables based on your needs
-anon_wallet = "txch1qtx68z7xa05yvm9pxkyexkvewvnfvhgtcy54zzf9gln5yxkj9v4svna5rz" #for example
-known_wallet = "txch1rdpgdacewwq0l8p4r9a4xzu3htccjqc4ynvgxnz7scn0569u7gfsn00mue" #for example
-value_amount = 1000000000000 #for example
+anon_wallet = "txch1znjytxf23nz7lcrqdg52djuct8rhfjg36e9ph2vm2s2pfc9z38yqez6rcr" #for example
+known_wallet = "txch150trmj9g08555k3qaptn0sl5dseq0recwmvgn73cdtch2dc3t0ksjuespy" #for example
+value_amount = 1000000000111
 #switch ADD_DATA for environment
 #ADD_DATA = bytes.fromhex("ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb") #genesis challenge(works for mainnet)
 ADD_DATA = bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2")  #genesis challenge(works for testnet10)
@@ -205,6 +205,7 @@ async def push_tx_async(spend_bundle: SpendBundle):
         full_node_client = await FullNodeRpcClient.create(
                 self_hostname, uint16(full_node_rpc_port), DEFAULT_ROOT_PATH, config
             )
+        print("Fees: {}".format(spend_bundle.fees()))    
         status = await full_node_client.push_tx(spend_bundle)
         return status
     finally:
@@ -264,3 +265,26 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     spend_bundle_file.close()    
     status = push_tx(spend_bundle)
     print_json(status)
+
+
+if __name__=='__main__':
+
+    def ready_verification(question):
+
+        while "the answer is invalid":
+            reply = str(input(question+' (y/n): ')).lower().strip()
+            if reply[:1] == 'y':
+                return True
+
+    wallet_ready_faucet = ready_verification('Faucet Coin wallet fingerprint synced and ready?')
+    if wallet_ready_faucet:
+        faucet_coin=deploy_smart_coin(FAUCET_CLSP,1000000,1000)
+        wallet_privacy_ready = ready_verification('Needs Privacy wallet fingerprint synced and ready?')
+        if wallet_privacy_ready:    
+            needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
+            wallet_decoy_ready = ready_verification('Decoy wallet fingerprint synced and ready?')
+            if wallet_decoy_ready:     
+                decoy_coin=deploy_smart_coin(DECOY_CLSP,1000000,1000)
+                decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,value_amount)           
+
+    blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)
