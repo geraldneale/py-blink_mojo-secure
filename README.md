@@ -31,7 +31,6 @@ Start the program in interactive mode and set the wallet variables to your own.
 
 ```
 $ python3 -i blink_mojo.py
-
 ```
 
 Use
