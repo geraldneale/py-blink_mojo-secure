@@ -21,12 +21,13 @@ $ pip3 install -r requirements.txt
 
 Edit the file blink_mojo.py
 -------------
+```
 anon_wallet = "txch<whateverwalletaddressyoudesire>"
    
 known_wallet = "txch<whateverotherwalletaddressyoudesire>"
    
 value_amount = whatevervalueyoudesire
-
+```
 Run
 -------
 Start the program in interactive mode and set the wallet variables to your own.
