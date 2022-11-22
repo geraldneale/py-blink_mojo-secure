@@ -90,7 +90,6 @@ def send_money(amount, address, fee):
 #needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
 def deploy_smart_coin(clsp_file: str, amount: uint64, fee=10):
     s = time.perf_counter()
-    # load coins (compiled and serialized, same content as clsp.hex)
     seed = secrets.token_bytes(32)
     print("Seed for {} coin: {}".format(clsp_file,seed))
     private_key: PrivateKey = AugSchemeMPL.key_gen(seed)
@@ -107,7 +106,11 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=10):
     # cdv clsp treehash
     treehash = mod.get_tree_hash()
     # cdv encode - txch->testnet10 or xch->mainnet
-    address = encode_puzzle_hash(treehash, "txch")
+    if ADD_DATA == bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2"):
+        chain_prefix = "txch"
+    else:
+        chain_prefix = "xch"   
+    address = encode_puzzle_hash(treehash, chain_prefix)
     coin = send_money(amount, address, fee)
     elapsed = time.perf_counter() - s
     print(f"deploy {clsp_file} with {amount} mojos to {treehash} in {elapsed:0.2f} seconds.")
