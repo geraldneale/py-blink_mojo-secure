@@ -70,7 +70,8 @@ Known issues and todos
 ---------
 1) Todo: The first guided step needs to be broken into two paths a. generating an address and using a faucet to do the spend or b. having blink_mojo do everything under the presumption that a faucet sent to a burner wallet fingerprint that will be used just this once. Right now it's only "b". 
 2) Todo: Expand the faucet coin functionality to Offer completed txs. In other words, either file a CHIP or hack Chia Offer spec to pay XCH to an aribitrary address. Right now it only pays to the wallet address that makes or takes the offer. This way the parent lineage of the offer maker/taker can be commandeered an appeneded to the needs_privacy value without depending on public faucets which are historically spotty in their uptime. 
-3) Issue: incompatible with standalone wallet.
+3) Issue: The anon_wallet address should be curried into the faucet coin puzzle hash, not part of the solution, to maximize that faucet coin's unmalleable control of the spend bundle at the end. 
+4) Issue: Incompatible with standalone wallet.
 
 Also check out
 ------------
