@@ -64,7 +64,7 @@ Chia-blockchain offers major privacy opportunities in three forms in this authou
 2) Due to the magic of BLS aggregated signatures there is no certainty on the blockchain of which coins went into which spend bundle in retrospect. There is just one aggregated signature per block. That signature canNOT be reverse engineered to any single spend bundle's aggregated signature with reliability(NOTE: this is as far as I know. please feel free to disagree, but tell me why). The same feature is used within the blink_mojo spend bundle securing each coin with its own BLS key pair and aggregating the signatures at the end securing the coins in the spend bundle from a subtraction attack, but each of the four public keys in the puzzle_reveals look unassociated in retrospect.  
 3) The puzzle hash for chia smart coins represents arbitrary logic(CREATE_COIN etc). If we request a faucet to send value to a smart coin puzzle hash address, instead of our own wallet, then we effectively control Chia blockchain logic anonymously using a public resource.
 
-Please try it with _in testnet only_. Use in mainnet only at your own risk.
+Please try it with _testnet only_. Use in mainnet only at your own risk.
 
 Known issues and todos
 ---------
