@@ -29,7 +29,8 @@ FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "
 anon_wallet = "txch1znjytxf23nz7lcrqdg52djuct8rhfjg36e9ph2vm2s2pfc9z38yqez6rcr" #for example
 known_wallet = "txch150trmj9g08555k3qaptn0sl5dseq0recwmvgn73cdtch2dc3t0ksjuespy" #for example
 value_amount = 1000000000111
-#switch ADD_DATA for environment
+default_fee = 1000      #mojos
+#switch for environment mainnet or testnest10
 #ADD_DATA = bytes.fromhex("ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb") #genesis challenge(works for mainnet)
 ADD_DATA = bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2")  #genesis challenge(works for testnet10)
 
@@ -38,7 +39,7 @@ self_hostname = config["self_hostname"] # localhost
 full_node_rpc_port = config["full_node"]["rpc_port"] # 8555
 wallet_rpc_port = config["wallet"]["rpc_port"] # 9256
 
-
+#these functions are here in case something goes wrong and you need to troublshoot using entries in log files
 async def get_coin_async(coin_id: str):
     try:
         full_node_client = await FullNodeRpcClient.create(
@@ -53,9 +54,8 @@ async def get_coin_async(coin_id: str):
 def get_coin(coin_id: str):
     return asyncio.run(get_coin_async(coin_id))
 
-# Send from your default wallet on your machine
-# Wallet has to be running, e.g., chia start wallet
-async def send_money_async(amount, address, fee=10):
+# Send from synced wallet on your machine e.g., chia start wallet
+async def send_money_async(amount, address, fee=default_fee):
     wallet_id = "1"
     try:
         print(f"sending {amount} to {address}...")
@@ -88,7 +88,7 @@ def send_money(amount, address, fee):
     return asyncio.run(send_money_async(amount, address, fee))
 
 #needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
-def deploy_smart_coin(clsp_file: str, amount: uint64, fee=10):
+def deploy_smart_coin(clsp_file: str, amount: uint64, fee=default_fee):
     s = time.perf_counter()
     seed = secrets.token_bytes(32)
     print("Seed for {} coin: {}".format(clsp_file,seed))
@@ -98,8 +98,10 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=10):
     #print("Public key for {}: {}".format(clsp_file, public_key))
     msg = bytes.fromhex(secrets.token_hex(16))
     print("Message: {}".format(msg))
-    if clsp_file in ["faucet.clsp", "decoy.clsp"]:
-        mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg,value_amount)
+    if clsp_file == "faucet.clsp":
+        mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg,value_amount,decode_puzzle_hash(anon_wallet))
+    elif clsp_file == "decoy.clsp":
+        mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg,value_amount,decode_puzzle_hash(known_wallet))
     else:    
         mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg)
     print(mod)    
@@ -126,78 +128,14 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=10):
     
     return coin, private_key, public_key, msg
 
-#this function is to obtain a target smart coin address to paste directly into a faucet
-#an alternative is to have the faucet send to a disposable wallet address first and
-#access it via your node and do the following from within blink_mojo:   faucet_coin=deploy_smart_coin(FAUCET_CLSP,1) #for example
-def get_faucet_coin_address():
-    s = time.perf_counter()
-    #form specific key pair
-    seed = secrets.token_bytes(32)
-    print("Seed for {} coin: {}".format(FAUCET_CLSP,seed))
-    private_key: PrivateKey = AugSchemeMPL.key_gen(seed)
-    #print("Private key for {}: {}".format(clsp_file, private_key))
-    public_key: G1Element = private_key.get_g1()
-    #print("Public key for {}: {}".format(clsp_file, public_key))
-    msg = bytes.fromhex(secrets.token_hex(16))
-    print("Message: {}".format(msg))
-    # load coins (compiled and serialized, same content as clsp.hex)
-    mod = load_clvm(FAUCET_CLSP, package_or_requirement=__name__).curry(public_key,msg,value_amount)
-    # cdv clsp treehash
-    treehash = mod.get_tree_hash()
-    if ADD_DATA == bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2"):
-        chain_prefix = "txch"
-    else:
-        chain_prefix = "xch"    
-    address = encode_puzzle_hash(treehash, chain_prefix)
-    print(f"Find a faucet and send a small amount of mojos to {address} ; for example 100 mojos")
-    with open('log_faucet.txt', 'a') as log_file:
-        prefix_name=FAUCET_CLSP.split('.')
-        log_file.write("{}_private_key: PrivateKey = AugSchemeMPL.key_gen({}".format(prefix_name[0],seed) + ")\n" + \
-            "{}_public_key: G1Element = {}_private_key.get_g1()\n".format(prefix_name[0], prefix_name[0]) + \
-            "{}_msg = {}\n".format(prefix_name[0], msg) + \
-                "{}_coin = get_coin(\"coinid from get_faucet_coin_info\"), {}_private_key, {}_public_key, {}_msg\n\n".format(prefix_name[0],prefix_name[0], prefix_name[0],prefix_name[0]) 
-                )
-    log_file.close()
-    
-    return address
-
-
-#checks online for coinid which may be needed later to complete the commands referenced in log_faucet.txt
-#copy and paste commands into a running blink_mojo as necessary
-#NOTE:the spacescan.io api only works for mainnet. 
-#for testnet if you need to use this function manually as follows: 
-#chia wallet send -a 0.000000000010 -m 0.000000000010 -t txch12345example67890 --override #for example
-#cdv decode txch12345example67890 #for example
-#cdv rpc coinrecords --by puzhash 0xdeadbeef -nd #for example to get the coinid and paste into log_faucet.txt
-def get_faucet_coin_info(address, faucet_coin_amount):
-    root_url = "https://api2.spacescan.io"
-    addr_url = f"{root_url}/1/xch/address/txns"
-    while 1:
-        print(f"checking for payments to {address}")
-        resp = urllib.request.urlopen(f"{addr_url}/{address}", timeout=10)
-        print(f"checking online here: {addr_url}/{address}")
-        if resp.status == 200:
-            coins = json.load(resp, parse_float=Decimal)["data"]["coins"][::-1]
-            for coin in coins:
-                amount = int(coin["amount"])
-                if amount >= faucet_coin_amount:
-                    with open('log_faucet.txt', 'a') as log_file:
-                        prefix_name=FAUCET_CLSP.split('.')
-                        log_file.write(
-                            "{}_coin_info = {}\n\n".format(prefix_name[0],coin))
-                        log_file.close()
-                    #print("Coin Info: {}".format([coin]))    
-                    return [coin]
-        time.sleep(30)    
-
-def solution_for_faucet(anon_wallet) -> Program:
-    return Program.to([decode_puzzle_hash(anon_wallet)])
+def solution_for_faucet() -> Program:
+    return Program.to([])
 
 def solution_for_needs_privacy() -> Program:
     return Program.to([])
 
-def solution_for_decoy(known_wallet) -> Program:
-    return Program.to([decode_puzzle_hash(known_wallet)])
+def solution_for_decoy() -> Program:
+    return Program.to([])
 
 def solution_for_decoy_value() -> Program:
     return Program.to([])
@@ -222,8 +160,8 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     # coin information, puzzle_reveal, and solution
     faucet_spend = CoinSpend(
         faucet_coin[0],
-       load_clvm(FAUCET_CLSP, package_or_requirement=__name__).curry(faucet_coin[2],faucet_coin[3],value_amount),
-        solution_for_faucet(anon_wallet)
+       load_clvm(FAUCET_CLSP, package_or_requirement=__name__).curry(faucet_coin[2],faucet_coin[3],value_amount,decode_puzzle_hash(anon_wallet)),
+        solution_for_faucet()
     )
     needs_privacy_spend = CoinSpend(
         needs_privacy_coin[0],
@@ -232,8 +170,8 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     )
     decoy_spend = CoinSpend(
         decoy_coin[0],
-       load_clvm(DECOY_CLSP, package_or_requirement=__name__).curry(decoy_coin[2],decoy_coin[3],value_amount),
-        solution_for_decoy(known_wallet)
+       load_clvm(DECOY_CLSP, package_or_requirement=__name__).curry(decoy_coin[2],decoy_coin[3],value_amount,decode_puzzle_hash(known_wallet)),
+        solution_for_decoy()
     )
     decoy_value_spend = CoinSpend(
         decoy_value_coin[0],
@@ -278,16 +216,16 @@ if __name__=='__main__':
             reply = str(input(question+' (y/n): ')).lower().strip()
             if reply[:1] == 'y':
                 return True
-
+    default_relay_coin_value = 1000000 #this becomes excess value in the final spend and therefore fees
     wallet_ready_faucet = ready_verification('Faucet Coin wallet fingerprint synced and ready?')
     if wallet_ready_faucet:
-        faucet_coin=deploy_smart_coin(FAUCET_CLSP,1000000,1000)
+        faucet_coin=deploy_smart_coin(FAUCET_CLSP,default_relay_coin_value,default_fee)
         wallet_privacy_ready = ready_verification('Needs Privacy wallet fingerprint synced and ready?')
         if wallet_privacy_ready:    
             needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
             wallet_decoy_ready = ready_verification('Decoy wallet fingerprint synced and ready?')
             if wallet_decoy_ready:     
-                decoy_coin=deploy_smart_coin(DECOY_CLSP,1000000,1000)
+                decoy_coin=deploy_smart_coin(DECOY_CLSP,default_relay_coin_value,default_fee)
                 decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,value_amount)           
 
     blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)
