@@ -216,14 +216,14 @@ if __name__=='__main__':
             reply = str(input(question+' (y/n): ')).lower().strip()
             if reply[:1] == 'y':
                 return True
-    default_relay_coin_value = 1000000 #this becomes excess value in the final spend and therefore fees
-    wallet_ready_faucet = ready_verification('Faucet Coin wallet fingerprint synced and ready?')
+    default_relay_coin_value = 10000 #this becomes excess value in the final spend and therefore fees
+    wallet_ready_faucet = ready_verification('Faucet Coin wallet synced and ready? Typically this is low value burner wallet.')
     if wallet_ready_faucet:
         faucet_coin=deploy_smart_coin(FAUCET_CLSP,default_relay_coin_value,default_fee)
-        wallet_privacy_ready = ready_verification('Needs Privacy wallet fingerprint synced and ready?')
+        wallet_privacy_ready = ready_verification('Needs Privacy wallet synced and ready?')
         if wallet_privacy_ready:    
             needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
-            wallet_decoy_ready = ready_verification('Decoy wallet fingerprint synced and ready?')
+            wallet_decoy_ready = ready_verification('Decoy wallet synced and ready? Typically this is a well funded wallet.')
             if wallet_decoy_ready:     
                 decoy_coin=deploy_smart_coin(DECOY_CLSP,default_relay_coin_value,default_fee)
                 decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,value_amount)           
