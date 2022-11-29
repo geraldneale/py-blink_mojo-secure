@@ -75,7 +75,7 @@ Known issues and todos
 
 Also check out
 ------------
-https://github.com/geraldneale/blink_mojo - the original proof of concept with a nice illustration of the asic concept and easily repoducible, auditable examples.
+https://github.com/geraldneale/blink_mojo - the original proof of concept with a illustration of the basic concept and is meant to be easily repoducible and auditable.
 
 Twitter @geraldneale
 
