@@ -43,7 +43,7 @@ Follow the prompts to deploy and send the coins from whatever wallet is synced t
 
 Final command
 ------
-The final command will run automatically and spend all four of the coins you put on the blockchain up to now. If it does not run you can always copy and paste the following to make it run again.
+The final command will run automatically and spend all four of the coins you put on the blockchain at once in one block and in one spend bundle. If it does not run you can always copy and paste the following to make it run again.
 ```
 >> blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)
 ```   
