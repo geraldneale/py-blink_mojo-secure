@@ -30,7 +30,7 @@ value_amount = whatevervalueyoudesire
 ```
 Run
 -------
-Start the program in interactive mode and set the wallet variables to your own.
+Start the program in interactive mode and optionally set the wallet variables to your own if you haven't done so already in the main file.
 
 ```
 $ python3 -i blink_mojo.py
