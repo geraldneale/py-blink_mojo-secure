@@ -3,7 +3,7 @@ Chialisp money privacy tool using non-interactive aggregated  <a href="https://w
 
 * Runs on testnet10 by default.
 * Requires full node.
-* Requires editing file blink_mojo.py for anonymous wallet and known wallet to your personal addresses. Can be edited into blink_mojo.py file or set at the prompt, as in: `anon_wallet = "txch<whateverwalletaddressyoudesire>"`
+* Requires editing file blink_mojo.py for anonymous wallet and known wallet to your personal addresses. Can be alternatively set at the >> prompt when running the program, as in: `>>anon_wallet = "txch<whateverwalletaddressyoudesire>"`
 
 
 Install
