@@ -56,7 +56,7 @@ You should see
  
  Mechanics
  ---------------
- The three items that make up a coinID contain the lineage of the coin in the ParentID and two other items; the amount and the puzzle hash.
+ The three items that make up a coinID are the amount, the puzzle hash and the parentID which is defined as the coin with chialisp inside it that outputted the CREATE_COIN op code when spent.
  ![Screenshot from 2022-12-12 16-36-21](https://user-images.githubusercontent.com/53587595/207159821-cd5e2467-9a57-43d3-98f8-f02282c1d35e.png)
 
 The coinID from the faucet coin in green can passed to a newly formed coin and keep the reference to a "grand-parentID" pointing back to the faucet. Also, if another equal value coin spent in a similar way is right next to it on the block it is unclear if the value that the deficit value the faucet coin overcame came from the red coin(needing privacy) or the brown coin(not needing privacy).
