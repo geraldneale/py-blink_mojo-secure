@@ -54,6 +54,12 @@ You should see
 `"status": "SUCCESS",
  "success": true`
  
+ Mechanics
+ ---------------
+ ![Screenshot from 2022-12-12 16-36-21](https://user-images.githubusercontent.com/53587595/207159821-cd5e2467-9a57-43d3-98f8-f02282c1d35e.png)
+
+ 
+ 
 Conclusion
 ---------
 
