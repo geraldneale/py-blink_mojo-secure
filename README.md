@@ -56,7 +56,7 @@ You should see
  
  Mechanics
  ---------------
- The three items that make up a coinID are the amount, the puzzle hash and the parentID which is defined as the coin whose chialisp outputted the CREATE_COIN op code to create this coin when spent.
+ The three items that make up a coinID are the amount, the puzzle hash and the parentID. ParentID is defined as the coin whose chialisp outputted the CREATE_COIN op code to create this coin when spent.
  ![Screenshot from 2022-12-12 16-36-21](https://user-images.githubusercontent.com/53587595/207159821-cd5e2467-9a57-43d3-98f8-f02282c1d35e.png)
 
 In blink_mojo the coinID from the faucet coin (in green) is passed to a newly formed coin as it's parentID and therefore keeps reference to it's own parentID as the new coin's "grand-parentID", which of course points back to the faucet despite it's value being much less. The value of the coin needing privacy(in red) goes somewhere, but nobody can say for sure where because another equal value coin is spent in a similar way nearby on the same block, the brown coin(not needing privacy). The lineage of the coin needing privacy ends here in this block. It's value goes somewhere here in this block, but to an indeterminate place thereby increasing privacy.
