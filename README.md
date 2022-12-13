@@ -38,9 +38,9 @@ $ python3 -i blink_mojo.py
 
 Use
 -------
-Follow the prompts to deploy and send the coins from whatever wallet is synced to the Chia blockchain.
+Follow the prompts to deploy the coins from whatever wallet needs to be synced for the given step.
 
-![image](https://user-images.githubusercontent.com/53587595/207199606-aa8cb869-e611-46f0-a986-ad43e295ae23.png)
+![image](https://user-images.githubusercontent.com/53587595/207199727-602c02f0-c350-4473-bc34-6353c1c2b7fe.png)
 
 
 Final command
