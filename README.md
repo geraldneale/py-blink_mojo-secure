@@ -40,6 +40,8 @@ Use
 -------
 Follow the prompts to deploy and send the coins from whatever wallet is synced to the Chia blockchain.
 
+![image](https://user-images.githubusercontent.com/53587595/207199606-aa8cb869-e611-46f0-a986-ad43e295ae23.png)
+
 
 Final command
 ------
