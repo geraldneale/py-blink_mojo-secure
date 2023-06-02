@@ -4,7 +4,7 @@ from blspy import AugSchemeMPL, G2Element, G1Element, PrivateKey
 import json
 import time
 import secrets
-from cdv.util.load_clvm import load_clvm
+from chia.wallet.puzzles.load_clvm import load_clvm
 from chia.util.byte_types import hexstr_to_bytes
 from chia.rpc.full_node_rpc_client import FullNodeRpcClient
 from chia.rpc.wallet_rpc_client import WalletRpcClient
