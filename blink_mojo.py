@@ -25,10 +25,6 @@ def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
-#define the following variables based on your needs
-anon_wallet = "txch1znjytxf23nz7lcrqdg52djuct8rhfjg36e9ph2vm2s2pfc9z38yqez6rcr" #for example
-known_wallet = "txch150trmj9g08555k3qaptn0sl5dseq0recwmvgn73cdtch2dc3t0ksjuespy" #for example
-value_amount = 1000000000111
 default_fee = 1000      #mojos
 #switch for environment mainnet or testnest10
 #ADD_DATA = bytes.fromhex("ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb") #genesis challenge(works for mainnet)
@@ -36,8 +32,8 @@ ADD_DATA = bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a4
 
 config = load_config(DEFAULT_ROOT_PATH, "config.yaml")
 self_hostname = config["self_hostname"] # localhost
-full_node_rpc_port = config["full_node"]["rpc_port"] # 8555
-wallet_rpc_port = config["wallet"]["rpc_port"] # 9256
+full_node_rpc_port = config["full_node"]["rpc_port"]
+wallet_rpc_port = config["wallet"]["rpc_port"] 
 
 #these functions are here in case something goes wrong and you need to troublshoot using entries in log files
 async def get_coin_async(coin_id: str):
@@ -74,7 +70,7 @@ async def send_money_async(amount, address, fee=default_fee):
             await asyncio.sleep(5)
             tx = await wallet_client.get_transaction(wallet_id, tx_id)
             print(".", end='', flush=True)
-        # get coin infos including coin id of the addition with the same puzzle hash
+        # get coin info including coinid of the addition with the same puzzle hash
         print(f"\ntx {tx_id} is confirmed.")
         puzzle_hash = decode_puzzle_hash(address)
         coin = next((c for c in tx.additions if c.puzzle_hash == puzzle_hash), None)
@@ -87,8 +83,7 @@ async def send_money_async(amount, address, fee=default_fee):
 def send_money(amount, address, fee):
     return asyncio.run(send_money_async(amount, address, fee))
 
-#needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
-def deploy_smart_coin(clsp_file: str, amount: uint64, fee=default_fee):
+def deploy_smart_createcoin(clsp_file: str, target_address: str, createcoin_amt_mojos: uint64, amount: uint64, fee=default_fee):
     s = time.perf_counter()
     seed = secrets.token_bytes(32)
     print("Seed for {} coin: {}".format(clsp_file,seed))
@@ -99,11 +94,46 @@ def deploy_smart_coin(clsp_file: str, amount: uint64, fee=default_fee):
     msg = bytes.fromhex(secrets.token_hex(16))
     print("Message: {}".format(msg))
     if clsp_file == "faucet.clsp":
-        mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg,value_amount,decode_puzzle_hash(anon_wallet))
+        mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg,createcoin_amt_mojos,decode_puzzle_hash(target_address))
     elif clsp_file == "decoy.clsp":
-        mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg,value_amount,decode_puzzle_hash(known_wallet))
-    else:    
+        mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg,createcoin_amt_mojos,decode_puzzle_hash(target_address))
+    else:    #probably can remove
         mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg)
+    print(mod)    
+    # cdv clsp treehash
+    treehash = mod.get_tree_hash()
+    # cdv encode - txch->testnet10 or xch->mainnet
+    if ADD_DATA == bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2"):
+        chain_prefix = "txch"
+    else:
+        chain_prefix = "xch"   
+    address = encode_puzzle_hash(treehash, chain_prefix)
+    coin = send_money(amount, address, fee)
+    elapsed = time.perf_counter() - s
+    print(f"deploy {clsp_file} with {amount} mojos to {treehash} in {elapsed:0.2f} seconds.")
+    print(f"coin_id: {coin.name().hex()}")
+    with open('log.txt', 'a') as log_file:
+        prefix_name=clsp_file.split('.')
+        log_file.write("{}_private_key: PrivateKey = AugSchemeMPL.key_gen({}".format(prefix_name[0],seed) + ")\n" + \
+            "{}_public_key: G1Element = {}_private_key.get_g1()\n".format(prefix_name[0], prefix_name[0]) + \
+            "{}_msg = {}\n".format(prefix_name[0], msg) + \
+                "{}_coin = get_coin(\"{}\"), {}_private_key, {}_public_key, {}_msg\n\n".format(prefix_name[0], coin.name().hex(), prefix_name[0], prefix_name[0],prefix_name[0])
+                )
+    log_file.close()
+    
+    return coin, private_key, public_key, msg
+
+def deploy_smart_coin(clsp_file: str, amount: uint64, fee=default_fee):
+    s = time.perf_counter()
+    seed = secrets.token_bytes(32)
+    print("Seed for {} coin: {}".format(clsp_file,seed))
+    private_key: PrivateKey = AugSchemeMPL.key_gen(seed)
+    #print("Private key for {}: {}".format(clsp_file, private_key))
+    public_key: G1Element = private_key.get_g1()
+    #print("Public key for {}: {}".format(clsp_file, public_key))
+    msg = bytes.fromhex(secrets.token_hex(16))
+    print("Message: {}".format(msg))   
+    mod = load_clvm(clsp_file, package_or_requirement=__name__).curry(public_key,msg)
     print(mod)    
     # cdv clsp treehash
     treehash = mod.get_tree_hash()
@@ -156,7 +186,7 @@ async def push_tx_async(spend_bundle: SpendBundle):
 def push_tx(spend_bundle: SpendBundle):
     return asyncio.run(push_tx_async(spend_bundle))
 
-def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
+def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin, anon_wallet, decoy_wallet,value_amount):
     # coin information, puzzle_reveal, and solution
     faucet_spend = CoinSpend(
         faucet_coin[0],
@@ -170,7 +200,7 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     )
     decoy_spend = CoinSpend(
         decoy_coin[0],
-       load_clvm(DECOY_CLSP, package_or_requirement=__name__).curry(decoy_coin[2],decoy_coin[3],value_amount,decode_puzzle_hash(known_wallet)),
+       load_clvm(DECOY_CLSP, package_or_requirement=__name__).curry(decoy_coin[2],decoy_coin[3],value_amount,decode_puzzle_hash(decoy_wallet)),
         solution_for_decoy()
     )
     decoy_value_spend = CoinSpend(
@@ -207,25 +237,37 @@ def blink_mojo(faucet_coin, needs_privacy_coin,decoy_coin, decoy_value_coin):
     status = push_tx(spend_bundle)
     print_json(status)
 
+def ready_verification(question):
 
-if __name__=='__main__':
+    while "the answer is invalid":
+        reply = str(input(question+' (y/n): ')).lower().strip()
+        if reply[:1] == 'y':
+            return True
 
-    def ready_verification(question):
+def main():        
 
-        while "the answer is invalid":
-            reply = str(input(question+' (y/n): ')).lower().strip()
-            if reply[:1] == 'y':
-                return True
-    default_relay_coin_value = 10000 #this becomes excess value in the final spend and therefore fees
-    wallet_ready_faucet = ready_verification('Faucet Coin wallet synced and ready? Typically this is low value burner wallet.')
+    default_relay_coin_value = 10000 #this becomes excess value and therefore fees in the final spend
+    wallet_ready_faucet = ready_verification('''Is Faucet Coin wallet synced and funded for > {} mojos?\nTypically this is low value burner wallet funded by a faucet or pool
+having no coins with parentID lineage to you.'''.format(default_relay_coin_value))
+    createcoin_amt_xch = float(input("How much XCH do you want to move from Needs Privacy to Anonymous wallet? "))
+    createcoin_amt_mojos = int(createcoin_amt_xch * 1000000000000)
+    print("{} Mojos".format(createcoin_amt_mojos))
     if wallet_ready_faucet:
-        faucet_coin=deploy_smart_coin(FAUCET_CLSP,default_relay_coin_value,default_fee)
+        anon_wallet_address = input("What is the XCH address of your Anonymous wallet? ")
+        print("Anonymous Wallet Address: {}".format(anon_wallet_address))
+        faucet_coin=deploy_smart_createcoin(FAUCET_CLSP,anon_wallet_address,createcoin_amt_mojos,default_relay_coin_value,default_fee)
         wallet_privacy_ready = ready_verification('Needs Privacy wallet synced and ready?')
         if wallet_privacy_ready:    
-            needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,value_amount)
+            needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,createcoin_amt_mojos)
             wallet_decoy_ready = ready_verification('Decoy wallet synced and ready? Typically this is a well funded wallet.')
-            if wallet_decoy_ready:     
-                decoy_coin=deploy_smart_coin(DECOY_CLSP,default_relay_coin_value,default_fee)
-                decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,value_amount)           
+            if wallet_decoy_ready:
+                decoy_wallet_address = input("What is the XCH address of your Decoy wallet? ")
+                print("Decoy Wallet Address: {}".format(decoy_wallet_address))     
+                decoy_coin=deploy_smart_createcoin(DECOY_CLSP,decoy_wallet_address,createcoin_amt_mojos,default_relay_coin_value,default_fee)
+                decoy_value_coin=deploy_smart_coin(DECOY_VALUE_CLSP,createcoin_amt_mojos)
 
-    blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin)
+    blink_mojo(faucet_coin,needs_privacy_coin,decoy_coin,decoy_value_coin,anon_wallet_address,decoy_wallet_address,createcoin_amt_mojos)
+            
+if __name__=='__main__':
+
+    main()        
