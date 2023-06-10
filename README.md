@@ -3,7 +3,7 @@ Chialisp money privacy tool using non-interactive aggregated  <a href="https://w
 
 * Runs on testnet10 by default.
 * Requires full node.
-* Requires editing file blink_mojo.py for anonymous wallet and known wallet to your personal addresses. Can be alternatively set at the >> prompt when running the program, as in: `>>anon_wallet = "txch<whateverwalletaddressyoudesire>"`
+* Requires running blink_mojo.py and following prompts for various things including inputting anonymous wallet and decoy wallet to build the smart coin that will send the vlaue to those two target addresses at the end. 
 
 
 Install
