@@ -22,7 +22,7 @@ $ pip3 install -r requirements.txt
 ```
 Run
 -------
-Start the program in interactive mode and optionally set the wallet variables to your own if you haven't done so already in the main file.
+Start the program.
 
 ```
 $ python3 blink_mojo.py
