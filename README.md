@@ -3,7 +3,9 @@ Chialisp money privacy tool using non-interactive aggregated  <a href="https://w
 
 * Runs on testnet10 by default.
 * Requires full node.
-* Requires running blink_mojo.py and following prompts for various things including inputting anonymous wallet and decoy wallet to build the smart coin that will send the vlaue to those two target addresses at the end. 
+* There must be a small amount of mojos in the Faucet wallet before starting.
+* Once you decide how much XCH needs privacy, there must be an equal or greater amount of XCH in both the Needs_Privacy and Decoy wallets to complete the transaction. For example, if you want 1 XCH to have privacy then there must be >= 1 XCH in both the Needs_Privacy and Decoy wallets before starting.
+* Requires following prompts for various things including inputting anonymous wallet and decoy wallet wallet addresses add to build the smart coins that will send value to those two target addresses at the end.
 
 
 Install
