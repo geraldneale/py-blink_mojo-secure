@@ -19,21 +19,13 @@ $ . ./venv/bin/activate
 $ pip3 install -r requirements.txt
 ```
 
-Edit the file blink_mojo.py
--------------
-```
-anon_wallet = "txch<whateverwalletaddressyoudesire>"
-   
-known_wallet = "txch<whateverotherwalletaddressyoudesire>"
-   
-value_amount = whatevervalueyoudesire
 ```
 Run
 -------
 Start the program in interactive mode and optionally set the wallet variables to your own if you haven't done so already in the main file.
 
 ```
-$ python3 -i blink_mojo.py
+$ python3 blink_mojo.py
 ```
 
 Use
