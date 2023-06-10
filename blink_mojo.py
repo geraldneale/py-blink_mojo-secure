@@ -74,7 +74,7 @@ async def send_money_async(amount, address, fee=default_fee):
         print(f"\ntx {tx_id} is confirmed.")
         puzzle_hash = decode_puzzle_hash(address)
         coin = next((c for c in tx.additions if c.puzzle_hash == puzzle_hash), None)
-        print(f"coin {coin}")
+        print(f"{coin}")
         return coin
     finally:
         wallet_client.close()
