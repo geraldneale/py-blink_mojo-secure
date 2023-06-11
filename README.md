@@ -1,7 +1,7 @@
 # py-blink_mojo-secure
 Chialisp money privacy tool using non-interactive aggregated  <a href="https://www.iacr.org/archive/asiacrypt2001/22480516.pdf">Boneh-Lynn-Shacham (BLS) signatures</a> for security. It uses a python3 driver for automatation and to make less error prone.
 
-* Runs on testnet10 by default.
+* Runs on testnet10 by default. Use on mainnet ***AT YOUR OWN RISK!***
 * Requires full node.
 * There must be a small amount of mojos in the Faucet wallet before starting.
 * Once you decide how much XCH needs privacy, there must be an equal or greater amount of XCH in both the Needs_Privacy and Decoy wallets to complete the transaction. For example, if you want 1 XCH to have privacy then there must be >= 1 XCH in both the Needs_Privacy and Decoy wallets before starting.
