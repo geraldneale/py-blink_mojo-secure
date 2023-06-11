@@ -249,17 +249,23 @@ def main():
     default_relay_coin_value = 10000 #this becomes excess value and therefore fees in the final spend
     wallet_ready_faucet = ready_verification('''Is Faucet Coin wallet synced and funded for > {} mojos?\nTypically this is low value burner wallet funded by a faucet or pool
 having no coins with parentID lineage to you.'''.format(default_relay_coin_value))
-    createcoin_amt_xch = float(input("How much XCH do you want to move from Needs Privacy to Anonymous wallet? "))
-    createcoin_amt_mojos = int(createcoin_amt_xch * 1000000000000)
+    while True:
+        try:
+            createcoin_amt_xch = float(input("How much XCH do you want to move from Needs Privacy to Anonymous wallet? "))
+        except ValueError:
+            print("When I ask for an amount, give me a number. Come on!")
+        else:
+            createcoin_amt_mojos = int(createcoin_amt_xch * 1000000000000)
+            break
     print("{} Mojos".format(createcoin_amt_mojos))
     if wallet_ready_faucet:
         anon_wallet_address = input("What is the XCH address of your Anonymous wallet? ")
         print("Anonymous Wallet Address: {}".format(anon_wallet_address))
         faucet_coin=deploy_smart_createcoin(FAUCET_CLSP,anon_wallet_address,createcoin_amt_mojos,default_relay_coin_value,default_fee)
-        wallet_privacy_ready = ready_verification('Needs Privacy wallet synced and ready?')
+        wallet_privacy_ready = ready_verification('Needs Privacy wallet synced and ready? Is it funded with > {} XCH?'.format(createcoin_amt_xch))
         if wallet_privacy_ready:    
             needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,createcoin_amt_mojos)
-            wallet_decoy_ready = ready_verification('Decoy wallet synced and ready? Typically this is a well funded wallet.')
+            wallet_decoy_ready = ready_verification('Decoy wallet synced and ready?  Is it funded with > {} XCH?'.format(createcoin_amt_xch))
             if wallet_decoy_ready:
                 decoy_wallet_address = input("What is the XCH address of your Decoy wallet? ")
                 print("Decoy Wallet Address: {}".format(decoy_wallet_address))     
