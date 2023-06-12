@@ -55,7 +55,7 @@ You should see
  ![Screenshot from 2022-12-12 16-36-21](https://user-images.githubusercontent.com/53587595/207159821-cd5e2467-9a57-43d3-98f8-f02282c1d35e.png)
 
 In blink_mojo the coinID from the faucet coin (in green) is passed to a newly formed coin as it's parentID and therefore keeps reference to it's own parentID as the new coin's "grand-parentID", which of course points back to the faucet despite it's value being much less. The value of the coin needing privacy(in red) goes somewhere, but nobody can say for sure where because another equal value coin is spent in a similar way nearby on the same block (in brown). The lineage of the coin needing privacy(in red) ends here in this block as does the brown coin. Their value goes somewhere in this block, but the exact location is indeterminate thereby increasing privacy.
- ![Screenshot from 2022-12-12 16-37-52](https://user-images.githubusercontent.com/53587595/207160076-fb19d161-54b7-4e66-a274-0aa2e62c5df5.png)
+![py-blink_mojo-secure](https://github.com/geraldneale/py-blink_mojo-secure/assets/53587595/b33c7751-0b19-4bb9-8e9e-edfae035368e)
 
  
 Conclusion
