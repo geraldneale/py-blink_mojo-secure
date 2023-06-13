@@ -32,8 +32,8 @@ $ python3 blink_mojo.py
 Use
 -------
 Follow the prompts to deploy the coins from whatever wallet needs to be synced for the given step.
+![Screenshot from 2023-06-12 20-05-09](https://github.com/geraldneale/py-blink_mojo-secure/assets/53587595/1d898ee1-7e79-40f0-9c98-43e0a21e90d5)
 
-![image](https://user-images.githubusercontent.com/53587595/207199727-602c02f0-c350-4473-bc34-6353c1c2b7fe.png)
 
 
 Final command
