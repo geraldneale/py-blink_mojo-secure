@@ -25,7 +25,9 @@ def print_json(dict):
     print(json.dumps(dict, sort_keys=True, indent=4))
 
 FAUCET_CLSP, NEEDS_PRIVACY_CLSP, DECOY_CLSP, DECOY_VALUE_CLSP = "faucet.clsp", "needs_privacy.clsp", "decoy.clsp","decoy_value.clsp"
-default_fee = 1000      #mojos
+default_fee = 10      #fees in mojos. set according to fee pressure, if any
+default_relay_coin_value = 10 #this becomes excess value and therefore fees in the final spend. set acccordingly.
+
 #switch for environment mainnet or testnest10
 #ADD_DATA = bytes.fromhex("ccd5bb71183532bff220ba46c268991a3ff07eb358e8255a65c30a2dce0e5fbb") #genesis challenge(works for mainnet)
 ADD_DATA = bytes.fromhex("ae83525ba8d1dd3f09b277de18ca3e43fc0af20d20c4b3e92ef2a48bd291ccb2")  #genesis challenge(works for testnet10)
@@ -244,11 +246,10 @@ def ready_verification(question):
         if reply[:1] == 'y':
             return True
 
-def main():        
-
-    default_relay_coin_value = 10000 #this becomes excess value and therefore fees in the final spend
-    wallet_ready_faucet = ready_verification('''Is Faucet Coin wallet synced and funded for > {} mojos?\nTypically this is low value burner wallet funded by a faucet or pool
-having no coins with parentID lineage to you.'''.format(default_relay_coin_value))
+def main():
+    
+    anon_wallet_address = input("What is the XCH address of your Anonymous wallet? ")
+    #print("Anonymous Wallet Address: {}".format(anon_wallet_address))
     while True:
         try:
             createcoin_amt_xch = float(input("How much XCH do you want to move from Needs Privacy to Anonymous wallet? "))
@@ -258,13 +259,24 @@ having no coins with parentID lineage to you.'''.format(default_relay_coin_value
             createcoin_amt_mojos = int(createcoin_amt_xch * 1000000000000)
             break
     print("{} Mojos".format(createcoin_amt_mojos))
+    wallet_ready_faucet = ready_verification('''Is Faucet Coin wallet synced and funded for >= {} mojos?\nTypically this is low value burner wallet funded by a faucet or pool
+having no coins with parentID lineage to you.'''.format(default_relay_coin_value))
+    #while True:
+    #    try:
+    #        createcoin_amt_xch = float(input("How much XCH do you want to move from Needs Privacy to Anonymous wallet? "))
+    #    except ValueError:
+    #        print("When I ask for an amount, give me a number. Come on!")
+    #    else:
+    #        createcoin_amt_mojos = int(createcoin_amt_xch * 1000000000000)
+    #        break
+    #print("{} Mojos".format(createcoin_amt_mojos))
     if wallet_ready_faucet:
-        anon_wallet_address = input("What is the XCH address of your Anonymous wallet? ")
-        print("Anonymous Wallet Address: {}".format(anon_wallet_address))
-        faucet_coin=deploy_smart_createcoin(FAUCET_CLSP,anon_wallet_address,createcoin_amt_mojos,default_relay_coin_value,default_fee)
+        #anon_wallet_address = input("What is the XCH address of your Anonymous wallet? ")
+        #print("Anonymous Wallet Address: {}".format(anon_wallet_address))
+        faucet_coin = deploy_smart_createcoin(FAUCET_CLSP,anon_wallet_address,createcoin_amt_mojos,default_relay_coin_value,default_fee)
         wallet_privacy_ready = ready_verification('Needs Privacy wallet synced and ready? Is it funded with > {} XCH?'.format(createcoin_amt_xch))
         if wallet_privacy_ready:    
-            needs_privacy_coin=deploy_smart_coin(NEEDS_PRIVACY_CLSP,createcoin_amt_mojos)
+            needs_privacy_coin = deploy_smart_coin(NEEDS_PRIVACY_CLSP,createcoin_amt_mojos)
             wallet_decoy_ready = ready_verification('Decoy wallet synced and ready?  Is it funded with > {} XCH?'.format(createcoin_amt_xch))
             if wallet_decoy_ready:
                 decoy_wallet_address = input("What is the XCH address of your Decoy wallet? ")
@@ -276,4 +288,4 @@ having no coins with parentID lineage to you.'''.format(default_relay_coin_value
             
 if __name__=='__main__':
 
-    main()        
+    main()
